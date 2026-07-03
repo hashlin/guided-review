@@ -1,0 +1,145 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* Q2 THEMING: these custom properties are consumed inside the @pierre/diffs
+   shadow roots. Syntax token colors come from the registered css-variables
+   theme (var(--diffs-token-*)), fg/bg from var(--diffs-foreground/background),
+   and --spike-* vars are referenced by the unsafeCSS override. */
+:root {
+  color-scheme: light;
+  --spike-ui-font: system-ui, -apple-system, sans-serif;
+  --spike-page-bg: #f6f8fa;
+  --spike-page-fg: #1f2328;
+  --spike-panel-bg: #ffffff;
+  --spike-border: #d0d7de;
+  --spike-addition: #1a7f37;
+  --spike-deletion: #cf222e;
+  --spike-accent: #0969da;
+
+  --diffs-foreground: #1f2328;
+  --diffs-background: #ffffff;
+  --diffs-token-keyword: #cf222e;
+  --diffs-token-string: #0a3069;
+  --diffs-token-comment: #6e7781;
+  --diffs-token-constant: #0550ae;
+  --diffs-token-function: #8250df;
+  --diffs-token-parameter: #953800;
+  --diffs-token-punctuation: #57606a;
+  --diffs-token-string-expression: #116329;
+  --diffs-token-link: #0a3069;
+  --diffs-font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --spike-page-bg: #010409;
+  --spike-page-fg: #e6edf3;
+  --spike-panel-bg: #0d1117;
+  --spike-border: #30363d;
+  --spike-addition: #3fb950;
+  --spike-deletion: #f85149;
+  --spike-accent: #58a6ff;
+
+  --diffs-foreground: #e6edf3;
+  --diffs-background: #0d1117;
+  --diffs-token-keyword: #ff7b72;
+  --diffs-token-string: #a5d6ff;
+  --diffs-token-comment: #8b949e;
+  --diffs-token-constant: #79c0ff;
+  --diffs-token-function: #d2a8ff;
+  --diffs-token-parameter: #ffa657;
+  --diffs-token-punctuation: #c9d1d9;
+  --diffs-token-string-expression: #7ee787;
+  --diffs-token-link: #a5d6ff;
+}
+
+.spike-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: var(--spike-ui-font);
+  background: var(--spike-page-bg);
+  color: var(--spike-page-fg);
+}
+
+.spike-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--spike-border);
+  background: var(--spike-panel-bg);
+  font-size: 13px;
+  flex: none;
+}
+
+.spike-header button {
+  font: inherit;
+  padding: 2px 10px;
+  border: 1px solid var(--spike-border);
+  border-radius: 6px;
+  background: var(--spike-page-bg);
+  color: inherit;
+  cursor: pointer;
+}
+
+.spike-codeview-host {
+  flex: 1;
+  min-height: 0;
+}
+
+.spike-codeview-host > div {
+  height: 100%;
+}
+
+/* Q1 INTERLEAVING: section prose rendered through renderAnnotation as a
+   file-level annotation (lineNumber 0) on the first file of each section. */
+.spike-prose {
+  padding: 20px 24px;
+  border-block: 1px solid var(--spike-border);
+  background: var(--spike-panel-bg);
+  font-family: var(--spike-ui-font);
+}
+
+.spike-prose-kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--spike-accent);
+  margin-bottom: 4px;
+}
+
+.spike-prose h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.spike-prose p {
+  margin: 0 0 8px;
+  max-width: 72ch;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.spike-metrics {
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  max-width: 420px;
+  max-height: 40vh;
+  overflow: auto;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: 10px;
+  line-height: 1.4;
+  background: color-mix(in srgb, var(--spike-panel-bg) 92%, transparent);
+  border: 1px solid var(--spike-border);
+  border-radius: 8px;
+  z-index: 10;
+  pointer-events: none;
+  white-space: pre-wrap;
+}
