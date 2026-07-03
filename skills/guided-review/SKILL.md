@@ -104,8 +104,20 @@ The guide is read by a human who trusts nothing and wants to understand *why*. Q
 - **Don't reference every file.** Skipped files land in "Everything else" and still get reviewed.
 - **Insights are for sharp edges only** — one or two sentences each, and only when real.
 
+## Installing (first run on a new machine)
+
+If `guided-review` is not on PATH, it isn't installed yet. Ask the user before installing (it clones and links software onto their machine), then:
+
+```bash
+git clone https://github.com/hashlin/guided-review ~/code/personal/tools/guided-review
+cd ~/code/personal/tools/guided-review
+bun install && bun run build && bun link
+```
+
+Requires [bun](https://bun.sh). `bun link` puts `guided-review` on PATH via `~/.bun/bin`. If a local checkout already exists, skip the clone and run the last line from it.
+
 ## Failure modes
 
 - `guided-review: not inside a git repository` — run it from the repo being reviewed (the CLI reviews the repo it's invoked from).
-- Command not found — the tool lives at `~/code/personal/tools/guided-review`; reinstall with `cd` there and `bun link`.
+- Command not found — not installed; see "Installing" above.
 - Invalid guide JSON → the server logs a warning and falls back to a plain diff viewer (guide ignored). If the user reports no sections appeared, validate your JSON against the schema above.
