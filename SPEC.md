@@ -224,7 +224,7 @@ Entry point `bin/guided-review.ts`, runnable with `bun bin/guided-review.ts`.
 
 ## 5. UI specification
 
-The interactive mockup at `scratchpad/guided-review-mockup.html` is the visual source of truth. This section describes structure and behavior.
+The interactive mockup at `prototype/mockup.html` is the visual source of truth. This section describes structure and behavior.
 
 ### Layout
 

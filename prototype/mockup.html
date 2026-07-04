@@ -1,0 +1,1771 @@
+<meta charset="utf-8">
+<title>Guided Review — UI Concept</title>
+<style>
+  :root {
+    --bg: #F5F5F2;
+    --panel: #FFFFFF;
+    --panel-2: #EDEDE8;
+    --border: #E0DFD8;
+    --border-strong: #CFCEC5;
+    --text: #1D1F23;
+    --muted: #6D7078;
+    --faint: #9A9DA5;
+    --accent: #A8611C;
+    --accent-soft: rgba(168, 97, 28, 0.10);
+    --supporting: #4E7A9B;
+    --noise: #9A9DA5;
+    --add-bg: #E9F4EA;
+    --add-gutter: #CDE6D0;
+    --del-bg: #FBEBEB;
+    --del-gutter: #F3D4D4;
+    --risk: #B4372F;
+    --risk-soft: rgba(180, 55, 47, 0.08);
+    --note: #38618A;
+    --note-soft: rgba(56, 97, 138, 0.08);
+    --syn-k: #7C3AAE;
+    --syn-s: #2F7D4F;
+    --syn-f: #1E66B8;
+    --syn-n: #B35A00;
+    --syn-c: #8A8D93;
+    --shadow: 0 1px 2px rgba(20, 20, 18, 0.05), 0 4px 16px rgba(20, 20, 18, 0.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1216;
+      --panel: #161A20;
+      --panel-2: #1C2129;
+      --border: #262C35;
+      --border-strong: #333A45;
+      --text: #E6E4DF;
+      --muted: #8B909A;
+      --faint: #5E636D;
+      --accent: #E2A45C;
+      --accent-soft: rgba(226, 164, 92, 0.12);
+      --supporting: #7FA8C9;
+      --noise: #5E636D;
+      --add-bg: rgba(70, 165, 85, 0.13);
+      --add-gutter: rgba(70, 165, 85, 0.22);
+      --del-bg: rgba(224, 82, 74, 0.12);
+      --del-gutter: rgba(224, 82, 74, 0.2);
+      --risk: #E0645C;
+      --risk-soft: rgba(224, 100, 92, 0.1);
+      --note: #7FA8C9;
+      --note-soft: rgba(127, 168, 201, 0.1);
+      --syn-k: #C583E8;
+      --syn-s: #7EC699;
+      --syn-f: #6CB6FF;
+      --syn-n: #E0A458;
+      --syn-c: #6E7681;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1216;
+    --panel: #161A20;
+    --panel-2: #1C2129;
+    --border: #262C35;
+    --border-strong: #333A45;
+    --text: #E6E4DF;
+    --muted: #8B909A;
+    --faint: #5E636D;
+    --accent: #E2A45C;
+    --accent-soft: rgba(226, 164, 92, 0.12);
+    --supporting: #7FA8C9;
+    --noise: #5E636D;
+    --add-bg: rgba(70, 165, 85, 0.13);
+    --add-gutter: rgba(70, 165, 85, 0.22);
+    --del-bg: rgba(224, 82, 74, 0.12);
+    --del-gutter: rgba(224, 82, 74, 0.2);
+    --risk: #E0645C;
+    --risk-soft: rgba(224, 100, 92, 0.1);
+    --note: #7FA8C9;
+    --note-soft: rgba(127, 168, 201, 0.1);
+    --syn-k: #C583E8;
+    --syn-s: #7EC699;
+    --syn-f: #6CB6FF;
+    --syn-n: #E0A458;
+    --syn-c: #6E7681;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+  }
+  :root[data-theme="light"] {
+    --bg: #F5F5F2;
+    --panel: #FFFFFF;
+    --panel-2: #EDEDE8;
+    --border: #E0DFD8;
+    --border-strong: #CFCEC5;
+    --text: #1D1F23;
+    --muted: #6D7078;
+    --faint: #9A9DA5;
+    --accent: #A8611C;
+    --accent-soft: rgba(168, 97, 28, 0.10);
+    --supporting: #4E7A9B;
+    --noise: #9A9DA5;
+    --add-bg: #E9F4EA;
+    --add-gutter: #CDE6D0;
+    --del-bg: #FBEBEB;
+    --del-gutter: #F3D4D4;
+    --risk: #B4372F;
+    --risk-soft: rgba(180, 55, 47, 0.08);
+    --note: #38618A;
+    --note-soft: rgba(56, 97, 138, 0.08);
+    --syn-k: #7C3AAE;
+    --syn-s: #2F7D4F;
+    --syn-f: #1E66B8;
+    --syn-n: #B35A00;
+    --syn-c: #8A8D93;
+    --shadow: 0 1px 2px rgba(20, 20, 18, 0.05), 0 4px 16px rgba(20, 20, 18, 0.04);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace; }
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  button:focus-visible, .rail-item:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ── Top bar ─────────────────────────────── */
+  header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+    height: 52px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .rail-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    margin: 0 -6px 0 -4px;
+    border-radius: 6px;
+    color: var(--muted);
+  }
+  .rail-toggle:hover { background: var(--panel-2); color: var(--text); }
+  .rail-toggle .pane-fill { opacity: 0.85; transition: opacity 0.12s ease; }
+  .rail-toggle.rail-off { color: var(--faint); }
+  .rail-toggle.rail-off:hover { color: var(--text); }
+  .rail-toggle.rail-off .pane-fill { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .rail-toggle .pane-fill { transition: none; }
+  }
+  .wordmark {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .wordmark .tilde { color: var(--accent); }
+  .repo-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+  .repo-chip b { color: var(--text); font-weight: 600; }
+  .guide-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+  .guide-chip .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .spacer { flex: 1; }
+  .rail-progress {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .progress-ring { flex-shrink: 0; display: block; }
+  .progress-ring circle { fill: none; stroke-width: 2; }
+  .ring-track { stroke: var(--border); }
+  .ring-fill {
+    stroke: var(--accent);
+    stroke-linecap: round;
+    stroke-dasharray: 34.56;
+    stroke-dashoffset: 34.56;
+    transition: stroke-dashoffset 0.25s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ring-fill { transition: none; }
+  }
+  .view-toggle {
+    position: relative;
+    display: flex;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px;
+  }
+  .view-toggle button {
+    position: relative;
+    z-index: 1;
+    font-size: 12px;
+    padding: 3px 12px;
+    border-radius: 4px;
+    color: var(--muted);
+    transition: color 0.15s ease;
+  }
+  .view-toggle button.active { color: var(--text); }
+  .seg-thumb {
+    position: absolute;
+    z-index: 0;
+    transition: left 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+                width 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+                top 0.18s cubic-bezier(0.2, 0.7, 0.2, 1),
+                height 0.18s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .view-thumb {
+    border-radius: 4px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+  .tab-thumb {
+    border-radius: 5px;
+    background: var(--panel-2);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .seg-thumb, .view-toggle button { transition: none; }
+  }
+  .finish-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  /* ── Layout ─────────────────────────────── */
+  .layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    --rail-w: 280px;
+  }
+
+  /* ── Rail ─────────────────────────────── */
+  .rail {
+    width: var(--rail-w);
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    transition: margin-left 0.18s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rail { transition: none; }
+  }
+  .layout.rail-hidden .rail { margin-left: calc(0px - var(--rail-w) - 1px); }
+  .layout.rail-hidden .rail-resizer { display: none; }
+  .rail-tabs {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 12px 0;
+  }
+  .rail-tabs button { position: relative; z-index: 1; transition: color 0.15s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .rail-tabs button { transition: none; }
+  }
+  .rail-tabs button {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+    padding: 6px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .rail-tabs button.active { color: var(--text); }
+  .rail-list {
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .rail-indicator {
+    position: absolute;
+    left: 8px;
+    width: calc(100% - 16px);
+    border-radius: 7px;
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    pointer-events: none;
+    opacity: 0;
+    transition: top 0.22s cubic-bezier(0.3, 0.8, 0.3, 1), height 0.22s ease;
+  }
+  .rail-indicator.no-anim { transition: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .rail-indicator { transition: none; }
+  }
+  .rail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 9px 10px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+  }
+  .rail-item:hover { background: var(--panel-2); }
+  .rail-item.active:hover { background: transparent; }
+  .tier-mark {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .tier-core .tier-mark { background: var(--accent); }
+  .tier-supporting .tier-mark { background: transparent; border: 1.5px solid var(--supporting); }
+  .tier-noise .tier-mark { background: transparent; border: 1.5px dashed var(--noise); }
+  .tier-bucket .tier-mark { background: transparent; border: 1.5px dotted var(--faint); border-radius: 50%; }
+  .rail-item-body { flex: 1; min-width: 0; }
+  .rail-item-title {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .rail-item-meta {
+    font-size: 11.5px;
+    color: var(--faint);
+    margin-top: 1px;
+    font-variant-numeric: tabular-nums;
+  }
+  .read-mark {
+    flex-shrink: 0;
+    width: 16px; height: 16px;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+  .rail-item.read .read-mark { color: var(--accent); }
+  .rail-item.read .rail-item-title { color: var(--muted); }
+  .rail-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .rail-file:hover { background: var(--panel-2); color: var(--text); }
+  .rail-file .stats { margin-left: auto; font-size: 11px; }
+  .stat-add { color: var(--syn-s); }
+  .stat-del { color: var(--risk); }
+  .rail-footer {
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .rail-resizer {
+    width: 7px;
+    margin-left: -4px;
+    flex-shrink: 0;
+    cursor: col-resize;
+    position: relative;
+    z-index: 5;
+  }
+  .rail-resizer:hover, .rail-resizer.dragging { background: var(--accent-soft); }
+  .rail-resizer.dragging { background: var(--accent); opacity: 0.35; }
+  .legend { display: flex; gap: 14px; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend .tier-mark { margin-top: 0; }
+
+  /* ── Main ─────────────────────────────── */
+  main {
+    flex: 1;
+    overflow-y: auto;
+    min-width: 0;
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    main { scroll-behavior: auto; }
+  }
+  .main-inner {
+    max-width: 1560px;
+    margin: 0 auto;
+    padding: 28px 36px 80px;
+  }
+  .section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-num-clip {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+  .sec-num { display: inline-block; }
+  .sec-num.roll-next { animation: numNext 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .sec-num.roll-prev { animation: numPrev 0.22s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  @keyframes numNext {
+    from { transform: translateY(0.9em); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  @keyframes numPrev {
+    from { transform: translateY(-0.9em); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sec-num.roll-next, .sec-num.roll-prev { animation: none; }
+  }
+  .tier-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+  }
+  .reviewed-flag {
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .tier-pill.core { color: var(--accent); background: var(--accent-soft); }
+  .tier-pill.supporting { color: var(--supporting); background: var(--note-soft); }
+  .tier-pill.noise { color: var(--muted); background: var(--panel-2); }
+  .tier-pill.bucket { color: var(--muted); background: var(--panel-2); }
+  h1.section-title {
+    font-size: 22px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin: 10px 0 0;
+    text-wrap: balance;
+  }
+  .explanation {
+    margin-top: 12px;
+    max-width: 68ch;
+    color: var(--text);
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  .explanation p { margin: 0 0 10px; }
+  .explanation p:last-child { margin-bottom: 0; }
+  .explanation code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.88em;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  .insight {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 18px;
+    padding: 1px 0 1px 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    max-width: 72ch;
+    color: var(--text);
+  }
+  .insight.risk { border-left: 2px solid var(--risk); }
+  .insight.note { border-left: 2px solid var(--note); }
+  .insight .insight-kind {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .insight.risk .insight-kind { color: var(--risk); }
+  .insight.note .insight-kind { color: var(--note); }
+
+  /* ── Diff card ─────────────────────────────── */
+  .diff-card {
+    margin-top: 22px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .diff-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    padding: 9px 14px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .diff-card.collapsed .diff-header { border-bottom: none; }
+  .diff-header .chev {
+    color: var(--faint);
+    font-size: 10px;
+    width: 12px;
+    transition: transform 0.15s ease;
+  }
+  .diff-card.collapsed .chev { transform: rotate(-90deg); }
+  @media (prefers-reduced-motion: reduce) { .diff-header .chev { transition: none; } }
+  .diff-path {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .diff-path .dir { color: var(--muted); font-weight: 400; }
+  .file-badge {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 1px 7px;
+    border-radius: 4px;
+  }
+  .file-badge.new { color: var(--syn-s); background: var(--add-bg); }
+  .diff-stats {
+    margin-left: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .diff-body { overflow-x: auto; }
+  .diff-card.collapsed .diff-body { display: none; }
+
+  table.diff {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+  .diff td { padding: 0; vertical-align: top; white-space: pre; }
+  .diff .ln {
+    width: 44px;
+    min-width: 44px;
+    text-align: right;
+    padding: 0 10px 0 4px;
+    color: var(--faint);
+    user-select: none;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+  }
+  .diff .code { padding: 0 16px 0 8px; width: 100%; }
+  .diff tr.add .code { background: var(--add-bg); }
+  .diff tr.add .ln { background: var(--add-gutter); }
+  .diff tr.del .code { background: var(--del-bg); }
+  .diff tr.del .ln { background: var(--del-gutter); }
+  .diff tr.hunk td {
+    background: var(--panel-2);
+    color: var(--faint);
+    padding: 3px 16px;
+    font-size: 11px;
+  }
+  .diff .sign { display: inline-block; width: 14px; color: var(--muted); user-select: none; }
+  tr.add .sign { color: var(--syn-s); }
+  tr.del .sign { color: var(--risk); }
+
+  /* split view */
+  .split-grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .split-grid .pane { min-width: 0; overflow-x: auto; }
+  .split-grid .pane + .pane { border-left: 1px solid var(--border); }
+  .split-grid .empty-line .code { background: repeating-linear-gradient(45deg, transparent, transparent 4px, var(--panel-2) 4px, var(--panel-2) 5px); }
+
+  .k { color: var(--syn-k); }
+  .s { color: var(--syn-s); }
+  .f { color: var(--syn-f); }
+  .n { color: var(--syn-n); }
+  .c { color: var(--syn-c); font-style: italic; }
+
+  /* collapsed noise file */
+  .noise-body {
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .noise-body .show-anyway {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* mark as read footer of section */
+  .section-actions {
+    margin-top: 26px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mark-read-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 550;
+    padding: 8px 16px;
+    border-radius: 7px;
+    border: 1px solid var(--border-strong);
+    background: var(--panel);
+  }
+  .mark-read-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .mark-read-btn.done {
+    background: var(--accent-soft);
+    border-color: transparent;
+    color: var(--accent);
+  }
+  .next-hint { font-size: 12.5px; color: var(--faint); }
+
+  .bucket-note {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 68ch;
+  }
+
+  /* ── Comments ─────────────────────────────── */
+  .diff tr.commentable td.code { position: relative; }
+  .add-comment-btn {
+    position: absolute;
+    left: -42px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 17px; height: 17px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: var(--panel);
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1;
+    user-select: none;
+    z-index: 1;
+  }
+  .diff tr.commentable:hover .add-comment-btn { display: flex; }
+  .diff tr.crow td {
+    padding: 10px 16px 14px 68px;
+    white-space: normal;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .comment-block {
+    border-left: 2px solid var(--accent);
+    padding: 1px 0 2px 12px;
+    max-width: 68ch;
+  }
+  .comment-label {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .comment-label .remove-comment {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--faint);
+  }
+  .comment-label .remove-comment:hover { color: var(--risk); }
+  .comment-text {
+    margin-top: 3px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .comment-composer { max-width: 68ch; }
+  .comment-composer textarea {
+    display: block;
+    width: 100%;
+    min-height: 64px;
+    resize: vertical;
+    font: inherit;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    padding: 8px 10px;
+  }
+  .comment-composer textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .composer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .btn-sm-primary {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--text);
+    color: var(--bg);
+  }
+  .btn-quiet {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .btn-quiet:hover { color: var(--text); }
+  .add-note-btn {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 8px 0;
+  }
+  .add-note-btn:hover { color: var(--accent); }
+  .note-composer { margin-top: 20px; }
+  .section-note { margin-top: 20px; }
+  .split-comments {
+    border-top: 1px solid var(--border);
+    padding: 10px 16px 14px;
+  }
+  .split-comments .comment-block { margin-top: 8px; }
+  .split-comments .comment-block:first-child { margin-top: 0; }
+  .crow-line-ref {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: normal;
+    text-transform: none;
+    font-weight: 500;
+  }
+
+  /* ── Finish panel ─────────────────────────────── */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 15, 13, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 40;
+  }
+  .finish-panel {
+    width: min(660px, calc(100vw - 48px));
+    max-height: 82vh;
+    background: var(--panel);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .fp-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .fp-head h2 { font-size: 16px; font-weight: 650; margin: 0; }
+  .fp-meta { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .fp-close { margin-left: auto; color: var(--faint); font-size: 16px; padding: 0 2px; }
+  .fp-close:hover { color: var(--text); }
+  .fp-body { flex: 1; overflow-y: auto; padding: 6px 20px 14px; min-height: 0; }
+  .fp-item { padding: 14px 0 2px; }
+  .fp-item + .fp-item { border-top: 1px solid var(--border); margin-top: 12px; }
+  .fp-ref {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .fp-ref .fp-path {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .fp-ref .fp-remove { margin-left: auto; font-size: 11px; color: var(--faint); }
+  .fp-ref .fp-remove:hover { color: var(--risk); }
+  .fp-quote {
+    margin: 7px 0 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    background: var(--panel-2);
+    border-radius: 6px;
+    padding: 5px 10px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .fp-text { margin-top: 7px; font-size: 13.5px; line-height: 1.55; }
+  .fp-empty { padding: 28px 0; font-size: 13.5px; color: var(--muted); text-align: center; }
+  .fp-foot {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .fp-foot .spacer { flex: 1; }
+  .prompt-preview { margin-top: 14px; }
+  .prompt-preview summary {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    user-select: none;
+  }
+  .prompt-preview summary:hover { color: var(--text); }
+  .prompt-preview pre {
+    margin: 8px 0 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    background: var(--panel-2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    overflow: auto;
+    max-height: 200px;
+    white-space: pre-wrap;
+  }
+  .copy-prompt-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 6px;
+    background: var(--text);
+    color: var(--bg);
+    min-width: 132px;
+    text-align: center;
+  }
+  .copy-prompt-btn:disabled { opacity: 0.4; cursor: default; }
+  .copy-prompt-btn.copied { background: var(--accent); color: var(--panel); }
+
+  /* ── Footer ─────────────────────────────── */
+  footer {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 36px;
+    padding: 0 16px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  footer .cli {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  footer .keys { margin-left: auto; display: flex; gap: 14px; white-space: nowrap; }
+  kbd {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 0 5px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 800px) {
+    .rail, .rail-resizer { display: none; }
+    .repo-chip, .guide-chip { display: none; }
+  }
+</style>
+
+<header>
+  <button class="rail-toggle" id="rail-toggle" title="Hide sidebar ([)" aria-label="Toggle sidebar">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <rect x="1.5" y="2.5" width="13" height="11" rx="2.5" stroke="currentColor" stroke-width="1.3"/>
+      <rect class="pane-fill" x="2.6" y="3.6" width="2.6" height="8.8" rx="0.8" fill="currentColor"/>
+      <line x1="6" y1="2.5" x2="6" y2="13.5" stroke="currentColor" stroke-width="1.3"/>
+    </svg>
+  </button>
+  <div class="wordmark"><span class="tilde">~/</span>guided-review</div>
+  <div class="repo-chip"><b>acme/api</b><span>feat/rate-limit → main</span></div>
+  <div class="guide-chip"><span class="dot"></span>Guide by Claude Code</div>
+  <div class="spacer"></div>
+  <div class="view-toggle" role="group" aria-label="Diff view">
+    <span class="seg-thumb view-thumb" id="view-thumb"></span>
+    <button id="btn-unified" class="active">Unified</button>
+    <button id="btn-split">Split</button>
+  </div>
+  <button class="finish-btn" id="finish-btn">Finish review</button>
+</header>
+
+<div class="layout">
+  <nav class="rail" aria-label="Guide sections">
+    <div class="rail-tabs">
+      <span class="seg-thumb tab-thumb" id="rail-tab-thumb"></span>
+      <button id="tab-guide" class="active">Guide</button>
+      <button id="tab-files">Files · 9</button>
+      <div class="rail-progress" id="rail-progress" title="0 of 5 sections reviewed">
+        <svg class="progress-ring" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+          <circle class="ring-track" cx="7" cy="7" r="5.5"/>
+          <circle class="ring-fill" id="progress-ring-fill" cx="7" cy="7" r="5.5" transform="rotate(-90 7 7)"/>
+        </svg>
+        <span id="progress-label">0/5</span>
+      </div>
+    </div>
+    <div class="rail-list" id="rail-list"></div>
+    <div class="rail-footer">
+      <div class="legend">
+        <span><span class="tier-mark" style="background: var(--accent)"></span>core</span>
+        <span><span class="tier-mark" style="border: 1.5px solid var(--supporting)"></span>supporting</span>
+        <span><span class="tier-mark" style="border: 1.5px dashed var(--noise)"></span>noise</span>
+      </div>
+    </div>
+  </nav>
+  <div class="rail-resizer" id="rail-resizer" title="Drag to resize · double-click to reset"></div>
+
+  <main id="main"><div class="main-inner" id="main-inner"></div></main>
+</div>
+
+<div id="overlay-root"></div>
+
+<footer>
+  <span class="cli">$ npx guided-review --base main --guide .review/guide.json</span>
+  <div class="keys">
+    <span><kbd>n</kbd> <kbd>p</kbd> section</span>
+    <span><kbd>space</kbd> mark reviewed</span>
+    <span><kbd>u</kbd> unified / split</span>
+    <span><kbd>[</kbd> sidebar</span>
+  </div>
+</footer>
+
+<script>
+const esc = s => s;
+
+// line: [type, oldNo, newNo, codeHtml]  type: ctx | add | del
+const SECTIONS = [
+  {
+    id: 'limiter',
+    tier: 'core',
+    title: 'Token bucket limiter',
+    explanation: [
+      'The core of the change. A <code>TokenBucket</code> tracks capacity per API key and refills continuously based on elapsed time rather than on a timer — this avoids a background interval per key and makes the limiter trivially testable with a fake clock.',
+      'Scrutinize the refill math and the <code>Map</code> growth: buckets are created lazily per key and never evicted in this version.'
+    ],
+    insights: [
+      { kind: 'risk', text: 'Buckets live in process memory. Multi-instance deployments will rate-limit per instance, not globally — the Redis strategy is planned but not in this PR.' }
+    ],
+    files: [
+      {
+        path: 'src/lib/limiter.ts', badge: 'new', add: 84, del: 0,
+        hunks: [
+          { header: '@@ -0,0 +1,34 @@', lines: [
+            ['add', null, 1,  '<span class="k">export interface</span> <span class="f">RateLimitOptions</span> {'],
+            ['add', null, 2,  '  capacity: <span class="k">number</span>'],
+            ['add', null, 3,  '  refillPerSecond: <span class="k">number</span>'],
+            ['add', null, 4,  '}'],
+            ['add', null, 5,  ''],
+            ['add', null, 6,  '<span class="k">export class</span> <span class="f">TokenBucket</span> {'],
+            ['add', null, 7,  '  <span class="k">private</span> tokens: <span class="k">number</span>'],
+            ['add', null, 8,  '  <span class="k">private</span> lastRefill: <span class="k">number</span>'],
+            ['add', null, 9,  ''],
+            ['add', null, 10, '  <span class="k">constructor</span>(<span class="k">private</span> opts: <span class="f">RateLimitOptions</span>, now = <span class="f">Date</span>.<span class="f">now</span>()) {'],
+            ['add', null, 11, '    <span class="k">this</span>.tokens = opts.capacity'],
+            ['add', null, 12, '    <span class="k">this</span>.lastRefill = now'],
+            ['add', null, 13, '  }'],
+            ['add', null, 14, ''],
+            ['add', null, 15, '  <span class="f">tryConsume</span>(now = <span class="f">Date</span>.<span class="f">now</span>()): <span class="k">boolean</span> {'],
+            ['add', null, 16, '    <span class="k">this</span>.<span class="f">refill</span>(now)'],
+            ['add', null, 17, '    <span class="k">if</span> (<span class="k">this</span>.tokens &lt; <span class="n">1</span>) <span class="k">return false</span>'],
+            ['add', null, 18, '    <span class="k">this</span>.tokens -= <span class="n">1</span>'],
+            ['add', null, 19, '    <span class="k">return true</span>'],
+            ['add', null, 20, '  }'],
+            ['add', null, 21, ''],
+            ['add', null, 22, '  <span class="k">private</span> <span class="f">refill</span>(now: <span class="k">number</span>) {'],
+            ['add', null, 23, '    <span class="k">const</span> elapsed = (now - <span class="k">this</span>.lastRefill) / <span class="n">1000</span>'],
+            ['add', null, 24, '    <span class="k">this</span>.tokens = <span class="f">Math</span>.<span class="f">min</span>('],
+            ['add', null, 25, '      <span class="k">this</span>.opts.capacity,'],
+            ['add', null, 26, '      <span class="k">this</span>.tokens + elapsed * <span class="k">this</span>.opts.refillPerSecond'],
+            ['add', null, 27, '    )'],
+            ['add', null, 28, '    <span class="k">this</span>.lastRefill = now'],
+            ['add', null, 29, '  }'],
+            ['add', null, 30, '}'],
+          ]},
+        ]
+      }
+    ]
+  },
+  {
+    id: 'middleware',
+    tier: 'core',
+    title: 'Middleware & app wiring',
+    explanation: [
+      'The Express middleware resolves the caller’s API key, looks up (or lazily creates) its bucket, and returns <code>429</code> with a <code>Retry-After</code> header when the bucket is empty.',
+      'The wiring change in <code>app.ts</code> is small but order-sensitive: the limiter is mounted <em>after</em> auth so limits apply per authenticated key, not per IP.'
+    ],
+    insights: [
+      { kind: 'note', text: 'Middleware ordering changed: rateLimit() now sits between auth() and the router. Anything reading req.apiKey before this point is unaffected.' }
+    ],
+    files: [
+      {
+        path: 'src/middleware/rateLimit.ts', badge: 'new', add: 28, del: 0,
+        hunks: [
+          { header: '@@ -0,0 +1,18 @@', lines: [
+            ['add', null, 1,  `<span class="k">import</span> { <span class="f">TokenBucket</span> } <span class="k">from</span> <span class="s">'../lib/limiter'</span>`],
+            ['add', null, 2,  `<span class="k">import</span> { config } <span class="k">from</span> <span class="s">'../config'</span>`],
+            ['add', null, 3,  ''],
+            ['add', null, 4,  '<span class="k">const</span> buckets = <span class="k">new</span> <span class="f">Map</span>&lt;<span class="k">string</span>, <span class="f">TokenBucket</span>&gt;()'],
+            ['add', null, 5,  ''],
+            ['add', null, 6,  '<span class="k">export function</span> <span class="f">rateLimit</span>() {'],
+            ['add', null, 7,  '  <span class="k">return</span> (req, res, next) =&gt; {'],
+            ['add', null, 8,  '    <span class="k">const</span> key = req.apiKey ?? req.ip'],
+            ['add', null, 9,  '    <span class="k">let</span> bucket = buckets.<span class="f">get</span>(key)'],
+            ['add', null, 10, '    <span class="k">if</span> (!bucket) {'],
+            ['add', null, 11, '      bucket = <span class="k">new</span> <span class="f">TokenBucket</span>(config.rateLimit)'],
+            ['add', null, 12, '      buckets.<span class="f">set</span>(key, bucket)'],
+            ['add', null, 13, '    }'],
+            ['add', null, 14, '    <span class="k">if</span> (bucket.<span class="f">tryConsume</span>()) <span class="k">return</span> <span class="f">next</span>()'],
+            ['add', null, 15, `    res.<span class="f">set</span>(<span class="s">'Retry-After'</span>, <span class="s">'1'</span>)`],
+            ['add', null, 16, `    res.<span class="f">status</span>(<span class="n">429</span>).<span class="f">json</span>({ error: <span class="s">'rate_limited'</span> })`],
+            ['add', null, 17, '  }'],
+            ['add', null, 18, '}'],
+          ]},
+        ]
+      },
+      {
+        path: 'src/app.ts', badge: null, add: 3, del: 1,
+        hunks: [
+          { header: '@@ -8,9 +8,11 @@', lines: [
+            ['ctx', 8,  8,  `<span class="k">import</span> { auth } <span class="k">from</span> <span class="s">'./middleware/auth'</span>`],
+            ['add', null, 9, `<span class="k">import</span> { rateLimit } <span class="k">from</span> <span class="s">'./middleware/rateLimit'</span>`],
+            ['ctx', 9,  10, `<span class="k">import</span> { router } <span class="k">from</span> <span class="s">'./routes'</span>`],
+            ['ctx', 10, 11, ''],
+            ['ctx', 11, 12, 'app.<span class="f">use</span>(<span class="f">auth</span>())'],
+            ['del', 12, null, 'app.<span class="f">use</span>(router)'],
+            ['add', null, 13, 'app.<span class="f">use</span>(<span class="f">rateLimit</span>())'],
+            ['add', null, 14, 'app.<span class="f">use</span>(router)'],
+            ['ctx', 13, 15, ''],
+          ]},
+        ]
+      }
+    ]
+  },
+  {
+    id: 'config',
+    tier: 'supporting',
+    title: 'Configuration plumbing',
+    explanation: [
+      'Capacity and refill rate come from environment variables with defaults of 60 requests burst / 10 per second sustained. Nothing clever here — verify the defaults match what ops expects.'
+    ],
+    insights: [],
+    files: [
+      {
+        path: 'src/config.ts', badge: null, add: 6, del: 0,
+        hunks: [
+          { header: '@@ -14,6 +14,12 @@', lines: [
+            ['ctx', 14, 14, '  port: <span class="f">int</span>(env.<span class="f">PORT</span>, <span class="n">3000</span>),'],
+            ['add', null, 15, '  rateLimit: {'],
+            ['add', null, 16, '    capacity: <span class="f">int</span>(env.<span class="f">RATE_LIMIT_BURST</span>, <span class="n">60</span>),'],
+            ['add', null, 17, '    refillPerSecond: <span class="f">int</span>(env.<span class="f">RATE_LIMIT_RPS</span>, <span class="n">10</span>),'],
+            ['add', null, 18, '  },'],
+            ['ctx', 15, 19, '}'],
+          ]},
+        ]
+      },
+      {
+        path: '.env.example', badge: null, add: 2, del: 0,
+        hunks: [
+          { header: '@@ -3,3 +3,5 @@', lines: [
+            ['ctx', 3, 3, 'PORT=3000'],
+            ['add', null, 4, 'RATE_LIMIT_BURST=60'],
+            ['add', null, 5, 'RATE_LIMIT_RPS=10'],
+          ]},
+        ]
+      }
+    ]
+  },
+  {
+    id: 'tests',
+    tier: 'supporting',
+    title: 'Tests',
+    explanation: [
+      'Unit tests drive the bucket with a fake clock: burst exhaustion, gradual refill, and cap-at-capacity. The middleware itself has one integration test asserting the <code>429</code> shape.'
+    ],
+    insights: [
+      { kind: 'note', text: 'No concurrency test — tryConsume is synchronous so this is fine today, but worth a test if the Redis strategy lands.' }
+    ],
+    files: [
+      {
+        path: 'test/limiter.test.ts', badge: 'new', add: 61, del: 0,
+        hunks: [
+          { header: '@@ -0,0 +1,14 @@', lines: [
+            ['add', null, 1,  `<span class="f">describe</span>(<span class="s">'TokenBucket'</span>, () =&gt; {`],
+            ['add', null, 2,  `  <span class="f">it</span>(<span class="s">'allows a full burst then rejects'</span>, () =&gt; {`],
+            ['add', null, 3,  '    <span class="k">const</span> b = <span class="k">new</span> <span class="f">TokenBucket</span>({ capacity: <span class="n">3</span>, refillPerSecond: <span class="n">1</span> }, <span class="n">0</span>)'],
+            ['add', null, 4,  '    <span class="f">expect</span>(b.<span class="f">tryConsume</span>(<span class="n">0</span>)).<span class="f">toBe</span>(<span class="k">true</span>)'],
+            ['add', null, 5,  '    <span class="f">expect</span>(b.<span class="f">tryConsume</span>(<span class="n">0</span>)).<span class="f">toBe</span>(<span class="k">true</span>)'],
+            ['add', null, 6,  '    <span class="f">expect</span>(b.<span class="f">tryConsume</span>(<span class="n">0</span>)).<span class="f">toBe</span>(<span class="k">true</span>)'],
+            ['add', null, 7,  '    <span class="f">expect</span>(b.<span class="f">tryConsume</span>(<span class="n">0</span>)).<span class="f">toBe</span>(<span class="k">false</span>)'],
+            ['add', null, 8,  '  })'],
+            ['add', null, 9,  ''],
+            ['add', null, 10, `  <span class="f">it</span>(<span class="s">'refills over time up to capacity'</span>, () =&gt; {`],
+            ['add', null, 11, '    <span class="c">// … 8 more cases</span>'],
+            ['add', null, 12, '  })'],
+            ['add', null, 13, '})'],
+          ]},
+        ]
+      }
+    ]
+  },
+  {
+    id: 'noise',
+    tier: 'noise',
+    title: 'Lockfile & generated types',
+    explanation: [
+      'Dependency bump for <code>express-types</code> plus regenerated API typings. Nothing hand-written — collapsed by default.'
+    ],
+    insights: [],
+    files: [
+      { path: 'package-lock.json', badge: null, add: 3412, del: 3401, noise: 'Lockfile — 6,813 changed lines hidden' },
+      { path: 'src/generated/api-types.d.ts', badge: null, add: 122, del: 96, noise: 'Generated file — hidden' }
+    ]
+  },
+  {
+    id: 'bucket',
+    tier: 'bucket',
+    title: 'Everything else',
+    bucketNote: 'Changed in the diff but not referenced by any guide section. The diff is always ground truth — a partial or stale guide can never hide code from review.',
+    explanation: [],
+    insights: [],
+    files: [
+      {
+        path: 'README.md', badge: null, add: 4, del: 1,
+        hunks: [
+          { header: '@@ -21,4 +21,7 @@', lines: [
+            ['ctx', 21, 21, '## Configuration'],
+            ['ctx', 22, 22, ''],
+            ['del', 23, null, 'See `.env.example` for available options.'],
+            ['add', null, 23, 'See `.env.example` for available options, including'],
+            ['add', null, 24, 'rate-limit tuning:'],
+            ['add', null, 25, ''],
+            ['add', null, 26, '- `RATE_LIMIT_BURST` / `RATE_LIMIT_RPS`'],
+          ]},
+        ]
+      }
+    ]
+  }
+];
+
+const state = {
+  current: 0,
+  read: new Set(),
+  view: 'unified',
+  railMode: 'guide',
+  comments: [
+    {
+      id: 1, sectionId: 'limiter', file: 'src/lib/limiter.ts', line: 23,
+      lineText: 'const elapsed = (now - this.lastRefill) / 1000',
+      text: 'If now ever goes backwards (NTP correction), elapsed is negative and the bucket shrinks below its real level. Clamp elapsed to 0.'
+    },
+    {
+      id: 2, sectionId: 'middleware', file: null, line: null, lineText: null,
+      text: 'Double-check nothing downstream of the router relied on running before rate limiting — the ordering change could mask an existing consumer of req.apiKey.'
+    }
+  ],
+  nextCommentId: 3,
+  composing: null,      // { file, line, lineText } — inline line composer
+  composingNote: false, // section-level note composer
+  finishOpen: false,
+  copied: false,
+};
+
+const reviewable = SECTIONS.filter(s => s.tier !== 'bucket').length;
+
+function tierLabel(t) {
+  return { core: 'Core', supporting: 'Supporting', noise: 'Noise', bucket: 'Unguided' }[t];
+}
+
+function updateRailIndicator() {
+  const ind = document.getElementById('rail-indicator');
+  if (!ind) return;
+  const active = document.querySelector('#rail-list .rail-item.active');
+  if (!active) { ind.style.opacity = '0'; return; }
+  ind.style.opacity = '1';
+  ind.style.top = active.offsetTop + 'px';
+  ind.style.height = active.offsetHeight + 'px';
+}
+
+function updateRailActive() {
+  if (state.railMode !== 'guide') return;
+  document.querySelectorAll('#rail-list .rail-item').forEach((btn, i) => {
+    btn.classList.toggle('active', i === state.current);
+    btn.classList.toggle('read', state.read.has(SECTIONS[i].id));
+  });
+  updateRailIndicator();
+  document.querySelector('#rail-list .rail-item.active')?.scrollIntoView({ block: 'nearest' });
+}
+
+function renderRail() {
+  const list = document.getElementById('rail-list');
+  list.innerHTML = '';
+  if (state.railMode === 'guide') {
+    const ind = document.createElement('div');
+    ind.className = 'rail-indicator';
+    ind.id = 'rail-indicator';
+    list.appendChild(ind);
+    SECTIONS.forEach((s, i) => {
+      const btn = document.createElement('button');
+      btn.className = `rail-item tier-${s.tier}` +
+        (i === state.current ? ' active' : '') +
+        (state.read.has(s.id) ? ' read' : '');
+      const fileCount = s.files.length;
+      const adds = s.files.reduce((a, f) => a + f.add, 0);
+      const dels = s.files.reduce((a, f) => a + f.del, 0);
+      const cCount = state.comments.filter(c => c.sectionId === s.id).length;
+      const cMeta = cCount ? ` · ${cCount} comment${cCount > 1 ? 's' : ''}` : '';
+      btn.innerHTML = `
+        <span class="tier-mark"></span>
+        <span class="rail-item-body">
+          <div class="rail-item-title">${s.title}</div>
+          <div class="rail-item-meta">${fileCount} file${fileCount > 1 ? 's' : ''} · <span class="stat-add">+${adds.toLocaleString()}</span> <span class="stat-del">−${dels.toLocaleString()}</span>${cMeta}</div>
+        </span>
+        <span class="read-mark">✓</span>`;
+      btn.addEventListener('click', () => { btn.blur(); select(i); });
+      list.appendChild(btn);
+    });
+    updateRailIndicator();
+  } else {
+    SECTIONS.forEach((s, i) => {
+      s.files.forEach(f => {
+        const btn = document.createElement('button');
+        btn.className = 'rail-file';
+        const parts = f.path.split('/');
+        const name = parts.pop();
+        btn.innerHTML = `<span><span class="dir">${parts.length ? parts.join('/') + '/' : ''}</span><b>${name}</b></span>
+          <span class="stats"><span class="stat-add">+${f.add.toLocaleString()}</span> <span class="stat-del">−${f.del.toLocaleString()}</span></span>`;
+        btn.addEventListener('click', () => { btn.blur(); select(i); });
+        list.appendChild(btn);
+      });
+    });
+  }
+}
+
+function escText(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function commentBlockHtml(c, opts = {}) {
+  const ref = opts.lineRef ? `<span class="crow-line-ref">line ${c.line}</span>` : '';
+  return `<div class="comment-block">
+    <div class="comment-label"><span>Your comment</span>${ref}<button class="remove-comment" data-remove="${c.id}">Remove</button></div>
+    <div class="comment-text">${escText(c.text)}</div>
+  </div>`;
+}
+
+function composerHtml(kind) {
+  return `<div class="comment-composer ${kind === 'note' ? 'note-composer' : ''}">
+    <textarea id="composer-ta" placeholder="${kind === 'note' ? 'Note on this section…' : 'Comment on this line…'}"></textarea>
+    <div class="composer-actions">
+      <button class="btn-sm-primary" id="composer-save">Comment</button>
+      <button class="btn-quiet" id="composer-cancel">Cancel</button>
+    </div>
+  </div>`;
+}
+
+function renderLinesUnified(hunk, file) {
+  let rows = `<tr class="hunk"><td colspan="3">${hunk.header}</td></tr>`;
+  hunk.lines.forEach(([t, o, n, code]) => {
+    const sign = t === 'add' ? '+' : t === 'del' ? '−' : ' ';
+    const commentable = file && !file.noise && n != null;
+    const addBtn = commentable
+      ? `<button class="add-comment-btn" data-file="${file.path}" data-line="${n}" aria-label="Comment on line ${n}">+</button>`
+      : '';
+    rows += `<tr class="${t}${commentable ? ' commentable' : ''}">
+      <td class="ln">${o ?? ''}</td><td class="ln">${n ?? ''}</td>
+      <td class="code">${addBtn}<span class="sign">${sign}</span>${code}</td></tr>`;
+    if (file && n != null) {
+      state.comments
+        .filter(c => c.file === file.path && c.line === n)
+        .forEach(c => { rows += `<tr class="crow"><td colspan="3">${commentBlockHtml(c)}</td></tr>`; });
+      if (state.composing && state.composing.file === file.path && state.composing.line === n) {
+        rows += `<tr class="crow"><td colspan="3">${composerHtml('line')}</td></tr>`;
+      }
+    }
+  });
+  return `<table class="diff">${rows}</table>`;
+}
+
+function renderLinesSplit(hunk) {
+  const pairs = [];
+  let pendingDel = [];
+  const flush = () => { pendingDel.forEach(d => pairs.push([d, null])); pendingDel = []; };
+  hunk.lines.forEach(line => {
+    const [t] = line;
+    if (t === 'ctx') { flush(); pairs.push([line, line]); }
+    else if (t === 'del') pendingDel.push(line);
+    else if (t === 'add') {
+      if (pendingDel.length) pairs.push([pendingDel.shift(), line]);
+      else pairs.push([null, line]);
+    }
+  });
+  flush();
+  const side = (line, which) => {
+    if (!line) return `<tr class="empty-line"><td class="ln"></td><td class="code"></td></tr>`;
+    const [t, o, n, code] = line;
+    const num = which === 'left' ? o : n;
+    const cls = t === 'ctx' ? 'ctx' : t;
+    const sign = t === 'add' ? '+' : t === 'del' ? '−' : ' ';
+    return `<tr class="${cls}"><td class="ln">${num ?? ''}</td><td class="code"><span class="sign">${sign}</span>${code}</td></tr>`;
+  };
+  let left = '', right = '';
+  pairs.forEach(([l, r]) => {
+    left += side(l && l[0] === 'add' ? null : l, 'left');
+    right += side(r && r[0] === 'del' ? null : r, 'right');
+  });
+  return `<div class="split-grid">
+    <div class="pane"><table class="diff">${left}</table></div>
+    <div class="pane"><table class="diff">${right}</table></div>
+  </div>`;
+}
+
+function renderMain(dir, preserveScroll) {
+  const s = SECTIONS[state.current];
+  const el = document.getElementById('main-inner');
+  const idx = state.current + 1;
+  const roll = dir > 0 ? ' roll-next' : dir < 0 ? ' roll-prev' : '';
+
+  let html = `
+    <div class="section-eyebrow">
+      <span>Section <span class="sec-num-clip"><span class="sec-num${roll}">${idx}</span></span> of ${SECTIONS.length}</span>
+      <span class="tier-pill ${s.tier}">${tierLabel(s.tier)}</span>
+      ${state.read.has(s.id) ? '<span class="reviewed-flag">✓ Reviewed</span>' : ''}
+    </div>
+    <h1 class="section-title">${s.title}</h1>`;
+
+  if (s.bucketNote) html += `<p class="bucket-note">${s.bucketNote}</p>`;
+  if (s.explanation.length) {
+    html += `<div class="explanation">${s.explanation.map(p => `<p>${p}</p>`).join('')}</div>`;
+  }
+  s.insights.forEach(ins => {
+    html += `<div class="insight ${ins.kind}">
+      <span class="insight-kind">${ins.kind}</span><span>${ins.text}</span></div>`;
+  });
+
+  s.files.forEach((f, fi) => {
+    const parts = f.path.split('/');
+    const name = parts.pop();
+    const badge = f.badge ? `<span class="file-badge ${f.badge}">${f.badge.toUpperCase()}</span>` : '';
+    let body;
+    if (f.noise) {
+      body = `<div class="noise-body"><span>${f.noise}</span><button class="show-anyway">Show anyway</button></div>`;
+    } else {
+      body = f.hunks.map(h => state.view === 'split' ? renderLinesSplit(h) : renderLinesUnified(h, f)).join('');
+      if (state.view === 'split') {
+        const fileComments = state.comments.filter(c => c.file === f.path);
+        if (fileComments.length) {
+          body += `<div class="split-comments">${fileComments.map(c => commentBlockHtml(c, { lineRef: true })).join('')}</div>`;
+        }
+      }
+    }
+    html += `
+      <div class="diff-card" id="file-${fi}">
+        <button class="diff-header" data-file="${fi}">
+          <span class="chev">▼</span>
+          <span class="diff-path"><span class="dir">${parts.length ? parts.join('/') + '/' : ''}</span>${name}</span>
+          ${badge}
+          <span class="diff-stats"><span class="stat-add">+${f.add.toLocaleString()}</span> <span class="stat-del">−${f.del.toLocaleString()}</span></span>
+        </button>
+        <div class="diff-body">${body}</div>
+      </div>`;
+  });
+
+  if (s.tier !== 'bucket') {
+    const notes = state.comments.filter(c => c.sectionId === s.id && !c.file);
+    notes.forEach(c => { html += `<div class="section-note">${commentBlockHtml(c)}</div>`; });
+    if (state.composingNote) html += `<div class="note-composer">${composerHtml('note')}</div>`;
+
+    const done = state.read.has(s.id);
+    const isLast = state.current === SECTIONS.length - 1;
+    html += `
+      <div class="section-actions">
+        <button class="mark-read-btn${done ? ' done' : ''}" id="mark-read">
+          ${done ? '✓ Reviewed' : 'Mark section reviewed'}
+        </button>
+        <button class="add-note-btn" id="add-note">Add section note</button>
+        <span class="next-hint">${isLast ? '' : 'then <kbd>n</kbd> for next section'}</span>
+      </div>`;
+  }
+
+  el.innerHTML = html;
+  if (!preserveScroll) document.getElementById('main').scrollTop = 0;
+
+  el.querySelectorAll('.diff-header').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.diff-card').classList.toggle('collapsed'));
+  });
+  const mark = document.getElementById('mark-read');
+  if (mark) mark.addEventListener('click', () => toggleRead());
+  const addNote = document.getElementById('add-note');
+  if (addNote) addNote.addEventListener('click', () => {
+    state.composing = null;
+    state.composingNote = true;
+    renderMain(0, true);
+  });
+
+  el.querySelectorAll('.add-comment-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const td = btn.closest('tr').querySelector('.code').cloneNode(true);
+      td.querySelectorAll('.add-comment-btn, .sign').forEach(x => x.remove());
+      state.composingNote = false;
+      state.composing = {
+        file: btn.dataset.file,
+        line: Number(btn.dataset.line),
+        lineText: td.textContent.trimEnd(),
+      };
+      renderMain(0, true);
+    });
+  });
+
+  el.querySelectorAll('.remove-comment').forEach(btn => {
+    btn.addEventListener('click', () => removeComment(Number(btn.dataset.remove)));
+  });
+
+  const ta = document.getElementById('composer-ta');
+  if (ta) {
+    ta.focus();
+    document.getElementById('composer-save').addEventListener('click', () => saveComposer(ta.value));
+    document.getElementById('composer-cancel').addEventListener('click', () => cancelComposer());
+    ta.addEventListener('keydown', e => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') saveComposer(ta.value);
+      if (e.key === 'Escape') cancelComposer();
+    });
+  }
+}
+
+function cancelComposer() {
+  state.composing = null;
+  state.composingNote = false;
+  renderMain(0, true);
+}
+
+function saveComposer(text) {
+  text = text.trim();
+  if (!text) return;
+  const s = SECTIONS[state.current];
+  if (state.composing) {
+    state.comments.push({ id: state.nextCommentId++, sectionId: s.id, ...state.composing, text });
+  } else if (state.composingNote) {
+    state.comments.push({ id: state.nextCommentId++, sectionId: s.id, file: null, line: null, lineText: null, text });
+  }
+  state.composing = null;
+  state.composingNote = false;
+  renderMain(0, true);
+  renderRail();
+}
+
+function removeComment(id) {
+  state.comments = state.comments.filter(c => c.id !== id);
+  renderMain(0, true);
+  renderRail();
+  if (state.finishOpen) renderOverlay();
+}
+
+function buildPrompt() {
+  const lines = [];
+  lines.push('Review feedback on this change (feat/rate-limit vs main). Please address each item:');
+  lines.push('');
+  state.comments.forEach((c, i) => {
+    const section = SECTIONS.find(s => s.id === c.sectionId);
+    if (c.file) {
+      lines.push(`${i + 1}. ${c.file}:${c.line} — ${section.title}`);
+      if (c.lineText) lines.push(`   > ${c.lineText.trim()}`);
+    } else {
+      lines.push(`${i + 1}. ${section.title} (section note)`);
+    }
+    lines.push(`   ${c.text}`);
+    lines.push('');
+  });
+  lines.push(`Reviewed ${state.read.size} of ${reviewable} guide sections at time of export.`);
+  return lines.join('\n');
+}
+
+function renderOverlay() {
+  const root = document.getElementById('overlay-root');
+  if (!state.finishOpen) { root.innerHTML = ''; return; }
+
+  const n = state.comments.length;
+  let items;
+  if (n === 0) {
+    items = `<div class="fp-empty">No comments. Add comments on lines you want changed — they collect here.</div>`;
+  } else {
+    items = state.comments.map(c => {
+      const section = SECTIONS.find(s => s.id === c.sectionId);
+      const ref = c.file
+        ? `<span class="fp-path">${c.file}:${c.line}</span><span>${section.title}</span>`
+        : `<span class="fp-path">section note</span><span>${section.title}</span>`;
+      const quote = c.lineText ? `<pre class="fp-quote">${escText(c.lineText.trim())}</pre>` : '';
+      return `<div class="fp-item">
+        <div class="fp-ref">${ref}<button class="fp-remove" data-remove="${c.id}">Remove</button></div>
+        ${quote}
+        <div class="fp-text">${escText(c.text)}</div>
+      </div>`;
+    }).join('');
+    items += `<details class="prompt-preview"><summary>Preview prompt</summary><pre>${escText(buildPrompt())}</pre></details>`;
+  }
+
+  root.innerHTML = `
+    <div class="overlay" id="overlay-bg">
+      <div class="finish-panel" role="dialog" aria-label="Finish review">
+        <div class="fp-head">
+          <h2>Finish review</h2>
+          <span class="fp-meta">${state.read.size} / ${reviewable} sections reviewed · ${n} comment${n === 1 ? '' : 's'}</span>
+          <button class="fp-close" id="fp-close" aria-label="Close">✕</button>
+        </div>
+        <div class="fp-body">${items}</div>
+        <div class="fp-foot">
+          <button class="btn-quiet" id="fp-dismiss">Keep reviewing</button>
+          <span class="spacer"></span>
+          <button class="copy-prompt-btn${state.copied ? ' copied' : ''}" id="fp-copy" ${n === 0 ? 'disabled' : ''}>
+            ${state.copied ? 'Copied — paste to agent' : 'Copy as prompt'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  const close = () => { state.finishOpen = false; state.copied = false; renderOverlay(); };
+  document.getElementById('fp-close').addEventListener('click', close);
+  document.getElementById('fp-dismiss').addEventListener('click', close);
+  document.getElementById('overlay-bg').addEventListener('click', e => { if (e.target.id === 'overlay-bg') close(); });
+  root.querySelectorAll('.fp-remove').forEach(btn => {
+    btn.addEventListener('click', () => removeComment(Number(btn.dataset.remove)));
+  });
+  const copyBtn = document.getElementById('fp-copy');
+  if (copyBtn && !copyBtn.disabled) {
+    copyBtn.addEventListener('click', async () => {
+      const text = buildPrompt();
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const t = document.createElement('textarea');
+        t.value = text; document.body.appendChild(t); t.select();
+        document.execCommand('copy'); t.remove();
+      }
+      state.copied = true;
+      renderOverlay();
+    });
+  }
+}
+
+function renderProgress() {
+  const n = state.read.size;
+  const C = 34.56;
+  document.getElementById('progress-label').textContent = `${n}/${reviewable}`;
+  document.getElementById('rail-progress').title = `${n} of ${reviewable} sections reviewed`;
+  document.getElementById('progress-ring-fill').style.strokeDashoffset = C * (1 - n / reviewable);
+}
+
+function select(i) {
+  const dir = i > state.current ? 1 : i < state.current ? -1 : 0;
+  state.current = i;
+  updateRailActive();
+  renderMain(dir);
+}
+
+function toggleRead() {
+  const s = SECTIONS[state.current];
+  if (s.tier === 'bucket') return;
+  if (state.read.has(s.id)) state.read.delete(s.id);
+  else {
+    state.read.add(s.id);
+    if (state.current < SECTIONS.length - 1) {
+      select(state.current + 1);
+      renderProgress();
+      return;
+    }
+  }
+  updateRailActive(); renderMain(); renderProgress();
+}
+
+function moveThumb(thumbId, btn) {
+  const t = document.getElementById(thumbId);
+  t.style.left = btn.offsetLeft + 'px';
+  t.style.top = btn.offsetTop + 'px';
+  t.style.width = btn.offsetWidth + 'px';
+  t.style.height = btn.offsetHeight + 'px';
+}
+
+function setView(v) {
+  state.view = v;
+  document.getElementById('btn-unified').classList.toggle('active', v === 'unified');
+  document.getElementById('btn-split').classList.toggle('active', v === 'split');
+  moveThumb('view-thumb', document.getElementById(v === 'unified' ? 'btn-unified' : 'btn-split'));
+  renderMain();
+}
+
+document.getElementById('btn-unified').addEventListener('click', () => setView('unified'));
+document.getElementById('btn-split').addEventListener('click', () => setView('split'));
+document.getElementById('tab-guide').addEventListener('click', () => {
+  state.railMode = 'guide';
+  document.getElementById('tab-guide').classList.add('active');
+  document.getElementById('tab-files').classList.remove('active');
+  moveThumb('rail-tab-thumb', document.getElementById('tab-guide'));
+  renderRail();
+});
+document.getElementById('tab-files').addEventListener('click', () => {
+  state.railMode = 'files';
+  document.getElementById('tab-files').classList.add('active');
+  document.getElementById('tab-guide').classList.remove('active');
+  moveThumb('rail-tab-thumb', document.getElementById('tab-files'));
+  renderRail();
+});
+
+const layout = document.querySelector('.layout');
+const rail = document.querySelector('.rail');
+const resizer = document.getElementById('rail-resizer');
+const railToggle = document.getElementById('rail-toggle');
+const RAIL_MIN = 220, RAIL_MAX = 460, RAIL_DEFAULT = 280;
+const clampRail = w => Math.min(RAIL_MAX, Math.max(RAIL_MIN, w));
+let railW = RAIL_DEFAULT;
+try { railW = clampRail(parseInt(localStorage.getItem('gr-rail-width')) || RAIL_DEFAULT); } catch {}
+const setRailWidth = w => {
+  railW = clampRail(w);
+  layout.style.setProperty('--rail-w', railW + 'px');
+  updateRailIndicator();
+};
+window.addEventListener('resize', () => {
+  updateRailIndicator();
+  moveThumb('rail-tab-thumb', document.querySelector('.rail-tabs button.active'));
+  moveThumb('view-thumb', document.querySelector('.view-toggle button.active'));
+});
+setRailWidth(railW);
+
+resizer.addEventListener('mousedown', e => {
+  e.preventDefault();
+  const startX = e.clientX;
+  const startW = railW;
+  document.getElementById('rail-indicator')?.classList.add('no-anim');
+  resizer.classList.add('dragging');
+  document.body.style.cursor = 'col-resize';
+  document.body.style.userSelect = 'none';
+  const onMove = ev => setRailWidth(startW + ev.clientX - startX);
+  const onUp = () => {
+    resizer.classList.remove('dragging');
+    document.getElementById('rail-indicator')?.classList.remove('no-anim');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    try { localStorage.setItem('gr-rail-width', railW); } catch {}
+    window.removeEventListener('mousemove', onMove);
+    window.removeEventListener('mouseup', onUp);
+  };
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', onUp);
+});
+resizer.addEventListener('dblclick', () => {
+  setRailWidth(RAIL_DEFAULT);
+  try { localStorage.setItem('gr-rail-width', RAIL_DEFAULT); } catch {}
+});
+
+function toggleRail() {
+  const hidden = layout.classList.toggle('rail-hidden');
+  railToggle.classList.toggle('rail-off', hidden);
+  railToggle.title = (hidden ? 'Show sidebar' : 'Hide sidebar') + ' ([)';
+}
+railToggle.addEventListener('click', toggleRail);
+
+document.getElementById('finish-btn').addEventListener('click', () => {
+  state.finishOpen = true;
+  state.copied = false;
+  renderOverlay();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && state.finishOpen) {
+    state.finishOpen = false; state.copied = false; renderOverlay();
+    return;
+  }
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (state.finishOpen) return;
+  if (e.key === 'n') select(Math.min(state.current + 1, SECTIONS.length - 1));
+  else if (e.key === 'p') select(Math.max(state.current - 1, 0));
+  else if (e.key === 'ArrowDown') { e.preventDefault(); select(Math.min(state.current + 1, SECTIONS.length - 1)); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); select(Math.max(state.current - 1, 0)); }
+  else if (e.key === 'u') setView(state.view === 'unified' ? 'split' : 'unified');
+  else if (e.key === '[') toggleRail();
+  else if (e.key === ' ') { e.preventDefault(); toggleRead(); }
+});
+
+renderRail();
+renderMain();
+renderProgress();
+moveThumb('rail-tab-thumb', document.getElementById('tab-guide'));
+moveThumb('view-thumb', document.getElementById('btn-unified'));
+</script>
