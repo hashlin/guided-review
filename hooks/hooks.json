@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -qE '\"skill\"[[:space:]]*:[[:space:]]*\"([^\"]*:)?code-review\"' && printf '%s' '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"From the guided-review plugin: after you complete this code review and report its findings, offer the user once — would they like to walk through the changes themselves in the browser with guided-review? If they accept, use the guided-review skill. Skip the offer if the user already declined guided review this session.\"}}' || true"
+          }
+        ]
+      }
+    ]
+  }
+}

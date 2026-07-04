@@ -1,0 +1,11 @@
+{
+  "name": "guided-review",
+  "owner": { "name": "Lin Min Phyo" },
+  "plugins": [
+    {
+      "name": "guided-review",
+      "source": "./",
+      "description": "Guided human code review in the browser, plus a post-/code-review suggestion hook."
+    }
+  ]
+}

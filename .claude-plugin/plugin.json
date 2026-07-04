@@ -1,0 +1,6 @@
+{
+  "name": "guided-review",
+  "description": "Guided human code review in the browser — sectioned walkthrough of a diff with explanations, signal tiers, and risk callouts. Includes a hook that offers guided review after /code-review runs.",
+  "version": "0.1.0",
+  "author": { "name": "Lin Min Phyo" }
+}
