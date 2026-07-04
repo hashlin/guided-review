@@ -1,6 +1,8 @@
 import type { FileDiffOptions } from '@pierre/diffs'
 import type { DiffEntry, ViewSection } from './useReview'
-import DiffBlock from './DiffBlock'
+import type { CommentSide, LineComment, ReviewComment } from './useComments'
+import DiffBlock, { type CommentAnchor } from './DiffBlock'
+import { CommentBlock, CommentComposer } from './Comments'
 import Markdown from './Markdown'
 
 const TIER_LABEL: Record<string, string> = {
@@ -10,30 +12,48 @@ const TIER_LABEL: Record<string, string> = {
   bucket: 'Unguided',
 }
 
+export type ComposerState =
+  | { kind: 'line'; file: string; line: number; side: CommentSide; lineText: string }
+  | { kind: 'note' }
+
 interface SectionViewProps {
   section: ViewSection
   index: number
   total: number
-  isLast: boolean
   reviewed: boolean
   dir: number
   onToggleReviewed: () => void
   diffs: Map<string, DiffEntry>
   requestDiff: (path: string, force?: boolean) => void
-  diffOptions: FileDiffOptions<undefined>
+  diffOptions: FileDiffOptions<CommentAnchor>
+  lineComments: Map<string, LineComment[]>
+  notes: ReviewComment[]
+  composer: ComposerState | null
+  onOpenLineComposer: (file: string, line: number, side: CommentSide, lineText: string) => void
+  onOpenNoteComposer: () => void
+  onSaveComposer: (text: string) => void
+  onCancelComposer: () => void
+  onRemoveComment: (id: string) => void
 }
 
 export default function SectionView({
   section,
   index,
   total,
-  isLast,
   reviewed,
   dir,
   onToggleReviewed,
   diffs,
   requestDiff,
   diffOptions,
+  lineComments,
+  notes,
+  composer,
+  onOpenLineComposer,
+  onOpenNoteComposer,
+  onSaveComposer,
+  onCancelComposer,
+  onRemoveComment,
 }: SectionViewProps) {
   const rollClass = dir > 0 ? ' roll-next' : dir < 0 ? ' roll-prev' : ''
   return (
@@ -70,19 +90,43 @@ export default function SectionView({
           entry={diffs.get(file.path)}
           requestDiff={requestDiff}
           options={diffOptions}
+          comments={lineComments.get(file.path)}
+          composer={
+            composer != null && composer.kind === 'line' && composer.file === file.path
+              ? composer
+              : null
+          }
+          onOpenComposer={onOpenLineComposer}
+          onSaveComposer={onSaveComposer}
+          onCancelComposer={onCancelComposer}
+          onRemoveComment={onRemoveComment}
         />
       ))}
       {section.tier !== 'bucket' && (
-        <div className="section-actions">
-          <button className={`mark-read-btn${reviewed ? ' done' : ''}`} onClick={onToggleReviewed}>
-            {reviewed ? '✓ Reviewed' : 'Mark section reviewed'}
-          </button>
-          {!isLast && (
-            <span className="next-hint">
-              then <kbd>n</kbd> for next section
-            </span>
+        <>
+          {notes.map((note) => (
+            <div key={note.id} className="section-note">
+              <CommentBlock comment={note} onRemove={onRemoveComment} />
+            </div>
+          ))}
+          {composer?.kind === 'note' && (
+            <div className="note-composer">
+              <CommentComposer
+                placeholder="Note on this section…"
+                onSave={onSaveComposer}
+                onCancel={onCancelComposer}
+              />
+            </div>
           )}
-        </div>
+          <div className="section-actions">
+            <button className="add-note-btn" onClick={onOpenNoteComposer}>
+              Add section note
+            </button>
+            <button className={`mark-read-btn${reviewed ? ' done' : ''}`} onClick={onToggleReviewed}>
+              {reviewed ? '✓ Reviewed' : 'Mark section reviewed'}
+            </button>
+          </div>
+        </>
       )}
     </div>
   )

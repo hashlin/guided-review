@@ -668,6 +668,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-left: auto;
     font-size: 13px;
     font-weight: 550;
     padding: 8px 16px;
@@ -681,7 +682,6 @@
     border-color: transparent;
     color: var(--accent);
   }
-  .next-hint { font-size: 12.5px; color: var(--faint); }
 
   .bucket-note {
     margin-top: 12px;
@@ -905,7 +905,7 @@
     border-radius: 6px;
     background: var(--text);
     color: var(--bg);
-    min-width: 132px;
+    min-width: 180px;
     text-align: center;
   }
   .copy-prompt-btn:disabled { opacity: 0.4; cursor: default; }
@@ -1455,14 +1455,12 @@ function renderMain(dir, preserveScroll) {
     if (state.composingNote) html += `<div class="note-composer">${composerHtml('note')}</div>`;
 
     const done = state.read.has(s.id);
-    const isLast = state.current === SECTIONS.length - 1;
     html += `
       <div class="section-actions">
+        <button class="add-note-btn" id="add-note">Add section note</button>
         <button class="mark-read-btn${done ? ' done' : ''}" id="mark-read">
           ${done ? '✓ Reviewed' : 'Mark section reviewed'}
         </button>
-        <button class="add-note-btn" id="add-note">Add section note</button>
-        <span class="next-hint">${isLast ? '' : 'then <kbd>n</kbd> for next section'}</span>
       </div>`;
   }
 

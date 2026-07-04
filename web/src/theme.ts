@@ -22,4 +22,8 @@ export const GR_UNSAFE_CSS = `
   --diffs-deletion-base: var(--gr-deletion, #B4372F);
   --diffs-header-font-family: var(--gr-ui-font, system-ui);
 }
+[data-utility-button] {
+  background-color: var(--accent, #A8611C);
+  color: var(--panel, #FFFFFF);
+}
 `

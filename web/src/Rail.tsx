@@ -12,6 +12,7 @@ interface RailProps {
   tab: RailTab
   current: number
   read: Set<string>
+  commentCounts: Map<string, number>
   reviewableCount: number
   railWidth: number
   dragging: boolean
@@ -38,6 +39,7 @@ export default function Rail({
   tab,
   current,
   read,
+  commentCounts,
   reviewableCount,
   railWidth,
   dragging,
@@ -148,6 +150,7 @@ export default function Rail({
               ]
                 .filter(Boolean)
                 .join(' ')
+              const commentCount = commentCounts.get(s.id) ?? 0
               return (
                 <button
                   key={s.id}
@@ -170,6 +173,7 @@ export default function Rail({
                           <span className="stat-del">−{s.deletions.toLocaleString()}</span>
                         </>
                       )}
+                      {commentCount > 0 && ` · ${commentCount} comment${commentCount === 1 ? '' : 's'}`}
                     </div>
                   </span>
                   <span className="read-mark">✓</span>

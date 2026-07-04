@@ -4,8 +4,12 @@ import { WorkerPoolContextProvider } from '@pierre/diffs/react'
 import type { ReviewMeta } from '../../shared/types'
 import { GR_THEME, GR_UNSAFE_CSS } from './theme'
 import { buildSections, useDiffLoader, useReview } from './useReview'
+import { useComments, type CommentSide } from './useComments'
+import type { LineComment } from './useComments'
+import type { CommentAnchor } from './DiffBlock'
 import Rail, { type RailTab } from './Rail'
-import SectionView from './SectionView'
+import SectionView, { type ComposerState } from './SectionView'
+import FinishPanel from './FinishPanel'
 import './app.css'
 
 const EXAMPLE_CLI = '$ guided-review --base main --guide .review/guide.json'
@@ -92,6 +96,9 @@ function Review({ meta }: { meta: ReviewMeta }) {
   const [railWidth, setRailWidthState] = useState(initialRailWidth)
   const [railHidden, setRailHidden] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const { comments, addComment, removeComment } = useComments(meta)
+  const [composer, setComposer] = useState<ComposerState | null>(null)
+  const [finishOpen, setFinishOpen] = useState(false)
   const mainRef = useRef<HTMLElement>(null)
   const pendingFileRef = useRef<string | null>(null)
   const layoutRef = useRef<HTMLDivElement>(null)
@@ -118,6 +125,7 @@ function Review({ meta }: { meta: ReviewMeta }) {
     setDir(i > prevCurrentRef.current ? 1 : i < prevCurrentRef.current ? -1 : 0)
     prevCurrentRef.current = i
     setCurrent(i)
+    setComposer(null)
   }, [])
 
   const selectSection = useCallback((i: number) => goToSection(i), [goToSection])
@@ -149,6 +157,59 @@ function Review({ meta }: { meta: ReviewMeta }) {
 
   const toggleRail = useCallback(() => setRailHidden((h) => !h), [])
 
+  const openLineComposer = useCallback(
+    (file: string, line: number, side: CommentSide, lineText: string) => {
+      setComposer({ kind: 'line', file, line, side, lineText })
+    },
+    [],
+  )
+  const openNoteComposer = useCallback(() => setComposer({ kind: 'note' }), [])
+  const cancelComposer = useCallback(() => setComposer(null), [])
+
+  const saveComposer = (text: string) => {
+    const s = sections[current]
+    if (composer == null || s == null) return
+    if (composer.kind === 'line') {
+      addComment({
+        sectionId: s.id,
+        file: composer.file,
+        line: composer.line,
+        side: composer.side,
+        lineText: composer.lineText,
+        text,
+      })
+    } else {
+      addComment({ sectionId: s.id, file: null, line: null, lineText: null, text })
+    }
+    setComposer(null)
+  }
+
+  const lineCommentsByFile = useMemo(() => {
+    const map = new Map<string, LineComment[]>()
+    if (section == null) return map
+    for (const c of comments) {
+      if (c.file == null || c.sectionId !== section.id) continue
+      const list = map.get(c.file)
+      if (list) list.push(c)
+      else map.set(c.file, [c])
+    }
+    return map
+  }, [comments, section])
+
+  const commentCounts = useMemo(() => {
+    const map = new Map<string, number>()
+    for (const c of comments) map.set(c.sectionId, (map.get(c.sectionId) ?? 0) + 1)
+    return map
+  }, [comments])
+
+  const sectionNotes = useMemo(
+    () =>
+      section == null
+        ? []
+        : comments.filter((c) => c.file == null && c.sectionId === section.id),
+    [comments, section],
+  )
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null
@@ -157,7 +218,13 @@ function Review({ meta }: { meta: ReviewMeta }) {
         (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)
       )
         return
+      if (e.key === 'Escape') {
+        if (finishOpen) setFinishOpen(false)
+        else if (composer != null) setComposer(null)
+        return
+      }
       if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (finishOpen) return
       if (sections.length === 0) return
       if (e.key === 'n') goToSection(Math.min(current + 1, sections.length - 1))
       else if (e.key === 'p') goToSection(Math.max(current - 1, 0))
@@ -178,7 +245,7 @@ function Review({ meta }: { meta: ReviewMeta }) {
     return () => window.removeEventListener('keydown', onKey)
   })
 
-  const diffOptions = useMemo<FileDiffOptions<undefined>>(
+  const diffOptions = useMemo<FileDiffOptions<CommentAnchor>>(
     () => ({
       theme: GR_THEME,
       diffStyle,
@@ -304,7 +371,9 @@ function Review({ meta }: { meta: ReviewMeta }) {
             Split
           </button>
         </div>
-        <button className="finish-btn">Finish review</button>
+        <button className="finish-btn" onClick={() => setFinishOpen(true)}>
+          Finish review
+        </button>
       </header>
       <div
         className={`layout${railHidden ? ' rail-hidden' : ''}`}
@@ -318,6 +387,7 @@ function Review({ meta }: { meta: ReviewMeta }) {
           tab={railTab}
           current={current}
           read={read}
+          commentCounts={commentCounts}
           reviewableCount={reviewableCount}
           railWidth={railWidth}
           dragging={dragging}
@@ -337,13 +407,20 @@ function Review({ meta }: { meta: ReviewMeta }) {
               section={section}
               index={current}
               total={sections.length}
-              isLast={current === sections.length - 1}
               reviewed={read.has(section.id)}
               dir={dir}
               onToggleReviewed={toggleReviewed}
               diffs={diffs}
               requestDiff={requestDiff}
               diffOptions={diffOptions}
+              lineComments={lineCommentsByFile}
+              notes={sectionNotes}
+              composer={composer}
+              onOpenLineComposer={openLineComposer}
+              onOpenNoteComposer={openNoteComposer}
+              onSaveComposer={saveComposer}
+              onCancelComposer={cancelComposer}
+              onRemoveComment={removeComment}
             />
           ) : (
             <div className="main-inner">
@@ -369,6 +446,17 @@ function Review({ meta }: { meta: ReviewMeta }) {
           </span>
         </div>
       </footer>
+      {finishOpen && (
+        <FinishPanel
+          meta={meta}
+          sections={sections}
+          comments={comments}
+          readCount={read.size}
+          reviewableCount={reviewableCount}
+          onClose={() => setFinishOpen(false)}
+          onRemove={removeComment}
+        />
+      )}
     </>
   )
 }
