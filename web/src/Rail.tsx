@@ -1,5 +1,7 @@
+import { useLayoutEffect, useRef } from 'react'
 import type { ChangedFile } from '../../shared/types'
 import type { ViewSection } from './useReview'
+import ProgressBar from './ProgressBar'
 
 export type RailTab = 'guide' | 'files'
 
@@ -10,6 +12,9 @@ interface RailProps {
   tab: RailTab
   current: number
   read: Set<string>
+  reviewableCount: number
+  railWidth: number
+  dragging: boolean
   onTab: (tab: RailTab) => void
   onSelectSection: (index: number) => void
   onSelectFile: (path: string) => void
@@ -33,23 +38,106 @@ export default function Rail({
   tab,
   current,
   read,
+  reviewableCount,
+  railWidth,
+  dragging,
   onTab,
   onSelectSection,
   onSelectFile,
 }: RailProps) {
+  const listRef = useRef<HTMLDivElement>(null)
+  const indicatorRef = useRef<HTMLDivElement>(null)
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const tabThumbRef = useRef<HTMLSpanElement>(null)
+
+  useLayoutEffect(() => {
+    const list = listRef.current
+    const indicator = indicatorRef.current
+    if (list == null || indicator == null) return
+    if (tab !== 'guide') {
+      indicator.style.opacity = '0'
+      return
+    }
+    const active = list.querySelector<HTMLElement>('.rail-item.active')
+    if (active == null) {
+      indicator.style.opacity = '0'
+      return
+    }
+    indicator.style.opacity = '1'
+    indicator.style.top = `${active.offsetTop}px`
+    indicator.style.height = `${active.offsetHeight}px`
+    active.scrollIntoView({ block: 'nearest' })
+  }, [current, tab, railWidth])
+
+  useLayoutEffect(() => {
+    const onResize = () => {
+      const list = listRef.current
+      const indicator = indicatorRef.current
+      if (list != null && indicator != null && tab === 'guide') {
+        const active = list.querySelector<HTMLElement>('.rail-item.active')
+        if (active != null) {
+          indicator.style.top = `${active.offsetTop}px`
+          indicator.style.height = `${active.offsetHeight}px`
+        }
+      }
+      const tabs = tabsRef.current
+      const thumb = tabThumbRef.current
+      if (tabs != null && thumb != null) {
+        const activeBtn = tabs.querySelector<HTMLElement>('button.active')
+        if (activeBtn != null) {
+          thumb.style.left = `${activeBtn.offsetLeft}px`
+          thumb.style.top = `${activeBtn.offsetTop}px`
+          thumb.style.width = `${activeBtn.offsetWidth}px`
+          thumb.style.height = `${activeBtn.offsetHeight}px`
+        }
+      }
+    }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [tab])
+
+  useLayoutEffect(() => {
+    const tabs = tabsRef.current
+    const thumb = tabThumbRef.current
+    if (tabs == null || thumb == null) return
+    const activeBtn = tabs.querySelector<HTMLElement>('button.active')
+    if (activeBtn == null) return
+    thumb.style.left = `${activeBtn.offsetLeft}px`
+    thumb.style.top = `${activeBtn.offsetTop}px`
+    thumb.style.width = `${activeBtn.offsetWidth}px`
+    thumb.style.height = `${activeBtn.offsetHeight}px`
+  }, [tab, hasGuide])
+
   return (
     <nav className="rail" aria-label="Guide sections">
-      <div className="rail-tabs">
+      <div className="rail-tabs" ref={tabsRef}>
+        <span className="seg-thumb tab-thumb" ref={tabThumbRef} />
         {hasGuide && (
-          <button className={tab === 'guide' ? 'active' : ''} onClick={() => onTab('guide')}>
+          <button
+            className={tab === 'guide' ? 'active' : ''}
+            onClick={(e) => {
+              e.currentTarget.blur()
+              onTab('guide')
+            }}
+          >
             Guide
           </button>
         )}
-        <button className={tab === 'files' ? 'active' : ''} onClick={() => onTab('files')}>
+        <button
+          className={tab === 'files' ? 'active' : ''}
+          onClick={(e) => {
+            e.currentTarget.blur()
+            onTab('files')
+          }}
+        >
           Files · {files.length}
         </button>
+        {hasGuide && <ProgressBar done={read.size} total={reviewableCount} />}
       </div>
-      <div className="rail-list">
+      <div className="rail-list" ref={listRef}>
+        {tab === 'guide' && (
+          <div className={`rail-indicator${dragging ? ' no-anim' : ''}`} ref={indicatorRef} />
+        )}
         {tab === 'guide'
           ? sections.map((s, i) => {
               const cls = [
@@ -61,7 +149,14 @@ export default function Rail({
                 .filter(Boolean)
                 .join(' ')
               return (
-                <button key={s.id} className={cls} onClick={() => onSelectSection(i)}>
+                <button
+                  key={s.id}
+                  className={cls}
+                  onClick={(e) => {
+                    e.currentTarget.blur()
+                    onSelectSection(i)
+                  }}
+                >
                   <span className="tier-mark" />
                   <span className="rail-item-body">
                     <div className="rail-item-title">{s.title}</div>
@@ -82,7 +177,14 @@ export default function Rail({
               )
             })
           : files.map((f) => (
-              <button key={f.path} className="rail-file" onClick={() => onSelectFile(f.path)}>
+              <button
+                key={f.path}
+                className="rail-file"
+                onClick={(e) => {
+                  e.currentTarget.blur()
+                  onSelectFile(f.path)
+                }}
+              >
                 <span className="file-label">
                   <SplitPath path={f.path} />
                 </span>

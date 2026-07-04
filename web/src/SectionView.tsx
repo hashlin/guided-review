@@ -16,6 +16,7 @@ interface SectionViewProps {
   total: number
   isLast: boolean
   reviewed: boolean
+  dir: number
   onToggleReviewed: () => void
   diffs: Map<string, DiffEntry>
   requestDiff: (path: string, force?: boolean) => void
@@ -28,18 +29,27 @@ export default function SectionView({
   total,
   isLast,
   reviewed,
+  dir,
   onToggleReviewed,
   diffs,
   requestDiff,
   diffOptions,
 }: SectionViewProps) {
+  const rollClass = dir > 0 ? ' roll-next' : dir < 0 ? ' roll-prev' : ''
   return (
     <div className="main-inner">
       <div className="section-eyebrow">
         <span>
-          Section {index + 1} of {total}
+          Section{' '}
+          <span className="sec-num-clip">
+            <span key={index} className={`sec-num${rollClass}`}>
+              {index + 1}
+            </span>
+          </span>{' '}
+          of {total}
         </span>
         <span className={`tier-pill ${section.tier}`}>{TIER_LABEL[section.tier]}</span>
+        {reviewed && <span className="reviewed-flag">✓ Reviewed</span>}
       </div>
       <h1 className="section-title">{section.title}</h1>
       {section.note != null && <p className="bucket-note">{section.note}</p>}
