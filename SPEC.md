@@ -206,6 +206,7 @@ Entry point `bin/guided-review.ts`, runnable with `bun bin/guided-review.ts`.
 **Flags:**
 - `--base <ref>` — base ref for the diff range. Optional.
 - `--head <ref>` — head ref. Default `HEAD`.
+- `--pr <number|url>` — review a GitHub pull request via the `gh` CLI. Mutually exclusive with `--base`/`--head`.
 - `--guide <path>` — path to the guide JSON. Optional; omit for plain-viewer mode.
 - `--port <n>` — server port. Default `4400`.
 - `--no-open` — do not auto-open the browser.
@@ -213,6 +214,7 @@ Entry point `bin/guided-review.ts`, runnable with `bun bin/guided-review.ts`.
 **Diff range:**
 - If `--base` is given, use `git diff --merge-base <base> <head>` semantics (i.e. `base...head`, comparing against the merge base).
 - If `--base` is **not** given, diff the working tree against HEAD (`git diff HEAD`).
+- If `--pr` is given: resolve the PR with `gh pr view` (accepts a number or URL; requires an authenticated `gh` and a clone of the repo), fetch `refs/pull/<n>/head` and the base branch from the PR's base repo — preferring a configured remote that points at it, falling back to its URL — then diff with the same merge-base semantics. Everything downstream (numstat, renames, per-file diffs) is the ordinary local-git path; nothing is parsed out of `gh` beyond PR metadata. Displayed range: `<baseBranch> → #<n> <headBranch>`.
 
 **Startup:**
 - Verify the cwd is inside a git repo via `git rev-parse --show-toplevel`. If not, exit `1` with a clear message.
@@ -298,7 +300,7 @@ Target: a **300-file / 20k+-line** change is interactive in **under ~1s** on a l
 Short, in priority order.
 
 1. **Feedback loop (`--wait`).** A `--wait` flag holds the CLI open until the human finishes. The UI gains per-section **approve / request-changes** and **anchored comments** (file + line). On finish, the tool emits a structured JSON review result to stdout for the calling agent to consume. The V1 read-only architecture is shaped so this is additive.
-2. **GitHub PR source (via `gh`).** Add a diff source that pulls a PR's diff and metadata through the `gh` CLI, alongside the local-git source.
+2. **GitHub PR source (via `gh`).** ✅ Shipped as `--pr` (see §4).
 3. **MCP server integration.** Expose guided-review as an MCP server so agents can launch a review and receive the structured result through the tool protocol rather than shelling out.
 
 ---
