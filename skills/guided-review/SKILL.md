@@ -15,12 +15,14 @@ The app renders the diff straight from git as ground truth. The guide only organ
 
 - Changes are commits on a branch → use `--base <base-branch>` (diffs base...HEAD).
 - Changes are uncommitted in the working tree → no `--base` (diffs working tree vs HEAD).
+- Changes live in a GitHub PR → use `--pr <number|url>` (fetches the PR via the `gh` CLI, which must be installed and authenticated; run from a clone of the repo). Mutually exclusive with `--base`/`--head`.
 - **Untracked files are invisible in working-tree mode.** If you created brand-new files and haven't committed, run `git add -N <file>` (intent-to-add) on each so they show up in the diff.
 
 ### 2. Get the ground-truth file list
 
 ```bash
 git diff --name-only <base>...HEAD   # or, working-tree mode: git diff --name-only HEAD
+gh pr diff <number> --name-only      # PR mode
 ```
 
 Every `refs[].file` in your guide must be a path from this list, exactly as printed (repo-relative; for renames use the new path; deleted files by the path shown here). A ref to any other path is silently useless.
@@ -81,7 +83,7 @@ echo $! > "$GUIDE_DIR/server.pid"
 
 (Or use your background-execution tool if you have one — same idea: retrievable output, known PID.)
 
-Flags: `--base <ref>`, `--head <ref>` (default HEAD), `--guide <path>`, `--port <n>` (default 4400), `--no-open` (suppress auto-opening the browser — omit it so the browser opens for the user). If the port is taken the CLI says so in its output — relaunch with `--port`.
+Flags: `--base <ref>`, `--head <ref>` (default HEAD), `--pr <number|url>`, `--guide <path>`, `--port <n>` (default 4400), `--no-open` (suppress auto-opening the browser — omit it so the browser opens for the user). If the port is taken the CLI says so in its output — relaunch with `--port`.
 
 ### 5. Verify before telling the user it's ready
 

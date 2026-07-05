@@ -2,17 +2,19 @@
 import { basename } from 'node:path'
 import { startServer } from '../server/index.ts'
 import { gitToplevel, resolveRef, type DiffRange } from '../server/git.ts'
+import { resolvePrRange } from '../server/github.ts'
 
 interface Flags {
   base?: string
-  head: string
+  head?: string
+  pr?: string
   guide?: string
   port: number
   open: boolean
 }
 
 function parseFlags(argv: string[]): Flags {
-  const flags: Flags = { head: 'HEAD', port: 4400, open: true }
+  const flags: Flags = { port: 4400, open: true }
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]
     switch (arg) {
@@ -21,6 +23,9 @@ function parseFlags(argv: string[]): Flags {
         break
       case '--head':
         flags.head = argv[++i]
+        break
+      case '--pr':
+        flags.pr = argv[++i]
         break
       case '--guide':
         flags.guide = argv[++i]
@@ -45,6 +50,10 @@ function parseFlags(argv: string[]): Flags {
     console.error('guided-review: --port must be a positive number.')
     process.exit(1)
   }
+  if (flags.pr && (flags.base || flags.head)) {
+    console.error('guided-review: --pr cannot be combined with --base/--head.')
+    process.exit(1)
+  }
   return flags
 }
 
@@ -54,6 +63,7 @@ function printUsage() {
 
   --base <ref>    Base ref for the diff range (base...head). Omit to diff the working tree against HEAD.
   --head <ref>    Head ref. Default: HEAD.
+  --pr <n|url>    Review a GitHub pull request (number or URL) via the gh CLI. Excludes --base/--head.
   --guide <path>  Path to a guide JSON file. Omit for plain diff-viewer mode.
   --port <n>      Server port. Default: 4400.
   --no-open       Do not auto-open the browser.`,
@@ -83,7 +93,15 @@ async function main() {
 
   // Resolve refs early and fail fast with readable errors.
   let range: DiffRange
-  if (flags.base) {
+  if (flags.pr) {
+    try {
+      range = await resolvePrRange(repoRoot, flags.pr)
+    } catch (err) {
+      console.error(`guided-review: could not resolve PR "${flags.pr}": ${(err as Error).message}`)
+      process.exit(1)
+    }
+  } else if (flags.base) {
+    const head = flags.head ?? 'HEAD'
     try {
       await resolveRef(repoRoot, flags.base)
     } catch {
@@ -91,15 +109,15 @@ async function main() {
       process.exit(1)
     }
     try {
-      await resolveRef(repoRoot, flags.head)
+      await resolveRef(repoRoot, head)
     } catch {
-      console.error(`guided-review: head ref "${flags.head}" could not be resolved.`)
+      console.error(`guided-review: head ref "${head}" could not be resolved.`)
       process.exit(1)
     }
     range = {
-      args: ['--merge-base', flags.base, flags.head],
+      args: ['--merge-base', flags.base, head],
       baseRef: flags.base,
-      headRef: flags.head,
+      headRef: head,
     }
   } else {
     // No base: diff the working tree against HEAD.
