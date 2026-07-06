@@ -1,6 +1,6 @@
 {
   "name": "guided-review",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local, agent-launched guided code review: a sectioned diff walkthrough in the browser with explanations, signal tiers, and risk callouts.",
   "license": "MIT",
   "repository": {
