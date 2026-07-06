@@ -26,6 +26,6 @@ jobs:
             echo "Tag v$TAG_VERSION does not match package.json version $PKG_VERSION" >&2
             exit 1
           fi
-      - run: npm publish --provenance
+      - run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
