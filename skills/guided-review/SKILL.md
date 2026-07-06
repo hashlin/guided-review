@@ -5,7 +5,7 @@ description: Launch guided-review, a local browser tool that lets the user revie
 
 # guided-review
 
-`guided-review` is a locally installed CLI (on PATH via bun link) that serves a code-review web app for the current git repo. You write a `guide.json` narrating the change you made, launch the CLI, and the user reviews the diff in their browser as a sectioned walkthrough — core changes first, explanations of *why* above each section's diffs, mechanical noise collapsed.
+`guided-review` is a locally installed CLI (`bun install -g guided-review`) that serves a code-review web app for the current git repo. You write a `guide.json` narrating the change you made, launch the CLI, and the user reviews the diff in their browser as a sectioned walkthrough — core changes first, explanations of *why* above each section's diffs, mechanical noise collapsed.
 
 The app renders the diff straight from git as ground truth. The guide only organizes it — files you don't reference still appear in an automatic "Everything else" section, so an incomplete guide never hides code.
 
@@ -108,15 +108,13 @@ The guide is read by a human who trusts nothing and wants to understand *why*. Q
 
 ## Installing (first run on a new machine)
 
-If `guided-review` is not on PATH, it isn't installed yet. Ask the user before installing (it clones and links software onto their machine), then:
+If `guided-review` is not on PATH, it isn't installed yet. Ask the user before installing (it installs software onto their machine), then:
 
 ```bash
-git clone https://github.com/hashlin/guided-review ~/code/personal/tools/guided-review
-cd ~/code/personal/tools/guided-review
-bun install && bun run build && bun link
+bun install -g guided-review
 ```
 
-Requires [bun](https://bun.sh). `bun link` puts `guided-review` on PATH via `~/.bun/bin`. If a local checkout already exists, skip the clone and run the last line from it.
+Requires [bun](https://bun.sh). The global install lands in `~/.bun/bin` — if the command is still not found afterwards, that directory is missing from PATH. To use it once without installing anything, substitute `bun x guided-review` for `guided-review` in the launch command.
 
 ## Failure modes
 

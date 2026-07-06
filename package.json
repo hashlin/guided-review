@@ -1,27 +1,41 @@
 {
   "name": "guided-review",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Local, agent-launched guided code review: a sectioned diff walkthrough in the browser with explanations, signal tiers, and risk callouts.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hashlin/guided-review.git"
+  },
   "type": "module",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
   "bin": {
     "guided-review": "bin/guided-review.ts"
   },
+  "files": [
+    "bin",
+    "server",
+    "shared",
+    "web/dist"
+  ],
   "scripts": {
     "dev:web": "vite --config web/vite.config.ts",
     "dev:server": "bun --watch server/index.ts",
     "build": "vite build --config web/vite.config.ts",
     "typecheck": "tsc --noEmit",
-    "start": "bun bin/guided-review.ts"
-  },
-  "dependencies": {
-    "@pierre/diffs": "^1.2.12",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "start": "bun bin/guided-review.ts",
+    "prepublishOnly": "bun run build"
   },
   "devDependencies": {
+    "@pierre/diffs": "^1.2.12",
     "@types/bun": "^1.3.14",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "typescript": "^6.0.3",
     "vite": "^8.1.3"
   }
