@@ -83,17 +83,21 @@ echo $! > "$GUIDE_DIR/server.pid"
 
 (Or use your background-execution tool if you have one — same idea: retrievable output, known PID.)
 
-Flags: `--base <ref>`, `--head <ref>` (default HEAD), `--pr <number|url>`, `--guide <path>`, `--port <n>` (default 4400), `--no-open` (suppress auto-opening the browser — omit it so the browser opens for the user). If the port is taken the CLI says so in its output — relaunch with `--port`.
+Flags: `--base <ref>`, `--head <ref>` (default HEAD), `--pr <number|url>`, `--guide <path>`, `--port <n>` (default 4400), `--no-open` (suppress auto-opening the browser — omit it so the browser opens for the user).
+
+If the port is taken the CLI says so in its output. The usual culprit is a guided-review left over from an earlier review — kill that one (via its PID file if you have it, or check what `lsof -i :4400` reports) rather than stacking servers, so the user isn't left with a stale review tab showing an old diff. Reach for `--port <n>` only when something else owns the port — and then verify and report using the port you actually launched on, not 4400.
 
 ### 5. Verify before telling the user it's ready
 
-An invalid guide does NOT error — the server logs a warning and silently serves a plain diff viewer. Never let the user be the one to discover that. Check:
+An invalid guide does NOT error — the server logs a warning and silently serves a plain diff viewer. Never let the user be the one to discover that. Two mechanics matter: the backgrounded server takes a moment to bind, so an instant curl can race it and look like a failure; and the check must hit the port you actually launched on — if you moved off 4400, curling 4400 interrogates whatever else lives there. A rejected guide serializes as exactly `"guide":null`:
 
 ```bash
-curl -s http://localhost:4400/api/review | grep -o '"guide":{"version"'
+PORT=4400  # the port you launched on
+for i in 1 2 3 4 5; do curl -sf "http://localhost:$PORT/api/review" >/dev/null && break; sleep 0.5; done
+curl -s "http://localhost:$PORT/api/review" | grep -q '"guide":null' && echo "GUIDE REJECTED"
 ```
 
-If `guide` is `null` in that response, your guide failed validation — read the server log for the reason, fix the JSON, and restart. Only then tell the user: the review is open at `http://localhost:<port>`, what the guide covers in one line, and how to stop the server when done (`kill $(cat "$GUIDE_DIR/server.pid")`).
+If that prints `GUIDE REJECTED` — or the server never responds at all — read the server log for the reason, fix the JSON (or the launch), and restart. Only then tell the user: the review is open at `http://localhost:<port>`, what the guide covers in one line, and how to stop the server when done (`kill $(cat "$GUIDE_DIR/server.pid")`).
 
 ## Writing a good guide
 
@@ -105,6 +109,12 @@ The guide is read by a human who trusts nothing and wants to understand *why*. Q
 - **3–7 sections.** Fewer feels ungrouped; more feels like busywork. Group related files.
 - **Don't reference every file.** Skipped files land in "Everything else" and still get reviewed.
 - **Insights are for sharp edges only** — one or two sentences each, and only when real.
+
+The same section, explained uselessly and usefully:
+
+> **Bad (restates the diff):** "Adds a `TokenBucket` class with a `tryConsume()` method and calls it from the request middleware."
+>
+> **Good (explains why):** "Limiting lives in its own class so bucket state has a single owner instead of being scattered through middleware. A fixed-window counter would have been simpler, but it lets bursts through at window edges — the exact abuse this change exists to stop. Scrutinize the refill math: it assumes wall-clock time never goes backwards."
 
 ## Installing (first run on a new machine)
 
