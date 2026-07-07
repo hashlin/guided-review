@@ -60,14 +60,70 @@ function parseFlags(argv: string[]): Flags {
 function printUsage() {
   console.error(
     `Usage: guided-review [options]
+       guided-review install-skills [--agent <name>...] [--yes]
 
   --base <ref>    Base ref for the diff range (base...head). Omit to diff the working tree against HEAD.
   --head <ref>    Head ref. Default: HEAD.
   --pr <n|url>    Review a GitHub pull request (number or URL) via the gh CLI. Excludes --base/--head.
   --guide <path>  Path to a guide JSON file. Omit for plain diff-viewer mode.
   --port <n>      Server port. Default: 4400.
-  --no-open       Do not auto-open the browser.`,
+  --no-open       Do not auto-open the browser.
+
+  install-skills  Install the guided-review agent skill globally via the skills.sh CLI.`,
   )
+}
+
+const SKILLS_SOURCE = 'hashlin/guided-review'
+
+function printInstallSkillsUsage() {
+  console.error(
+    `Usage: guided-review install-skills [options]
+
+Install the guided-review agent skill globally (via "bun x skills add").
+Without --agent, the skills CLI detects installed agents and prompts.
+
+  --agent <name>  Target a specific agent (e.g. claude-code, codex). Repeatable.
+  --yes, -y       Skip confirmation prompts.`,
+  )
+}
+
+async function installSkills(argv: string[]): Promise<never> {
+  const passthrough: string[] = []
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]
+    switch (arg) {
+      case '--agent': {
+        const agent = argv[++i]
+        if (!agent) {
+          console.error('guided-review: --agent requires a value.')
+          process.exit(1)
+        }
+        passthrough.push('--agent', agent)
+        break
+      }
+      case '--yes':
+      case '-y':
+        passthrough.push('--yes')
+        break
+      case '-h':
+      case '--help':
+        printInstallSkillsUsage()
+        process.exit(0)
+      default:
+        console.error(`guided-review: unknown argument "${arg}"`)
+        printInstallSkillsUsage()
+        process.exit(1)
+    }
+  }
+  const proc = Bun.spawn(
+    [process.execPath, 'x', 'skills', 'add', SKILLS_SOURCE, '--global', ...passthrough],
+    { stdin: 'inherit', stdout: 'inherit', stderr: 'inherit' },
+  )
+  const code = await proc.exited
+  if (code !== 0) {
+    console.error(`guided-review: skill installation failed (exit code ${code}).`)
+  }
+  process.exit(code)
 }
 
 function openBrowser(targetUrl: string) {
@@ -80,7 +136,11 @@ function openBrowser(targetUrl: string) {
 }
 
 async function main() {
-  const flags = parseFlags(Bun.argv.slice(2))
+  const argv = Bun.argv.slice(2)
+  if (argv[0] === 'install-skills') {
+    await installSkills(argv.slice(1))
+  }
+  const flags = parseFlags(argv)
   const cwd = process.cwd()
 
   let repoRoot: string

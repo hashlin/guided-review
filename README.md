@@ -29,7 +29,25 @@ bun x guided-review --base main --guide path/to/guide.json
 
 ## Install the skill only
 
-Copy `skills/guided-review/` into `~/.claude/skills/` (no hook, no plugin).
+If the CLI is already installed:
+
+```
+guided-review install-skills
+```
+
+This detects your installed agents (Claude Code, Codex, Cursor, and
+[70+ more](https://github.com/vercel-labs/skills)) and installs the skill
+globally via the [skills.sh](https://skills.sh) CLI. Non-interactive:
+`guided-review install-skills --agent claude-code --yes`.
+
+Or without installing anything first:
+
+```
+npx skills add hashlin/guided-review
+```
+
+Either way installs the skill only (no hook, no plugin). Manual fallback:
+copy `skills/guided-review/` into `~/.claude/skills/`.
 
 ## Develop from source
 

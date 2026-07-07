@@ -18,6 +18,7 @@
     "bin",
     "server",
     "shared",
+    "skills",
     "web/dist"
   ],
   "scripts": {
