@@ -23,7 +23,7 @@ export const GR_UNSAFE_CSS = `
   --diffs-header-font-family: var(--gr-ui-font, system-ui);
 }
 [data-utility-button] {
-  background-color: var(--accent, #A8611C);
+  background-color: var(--accent, #1D1F23);
   color: var(--panel, #FFFFFF);
 }
 `

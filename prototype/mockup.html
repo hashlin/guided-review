@@ -10,8 +10,10 @@
     --text: #1D1F23;
     --muted: #6D7078;
     --faint: #9A9DA5;
-    --accent: #A8611C;
-    --accent-soft: rgba(168, 97, 28, 0.10);
+    --accent: #1D1F23;
+    --accent-soft: rgba(29, 31, 35, 0.07);
+    --core: #A8611C;
+    --core-soft: rgba(168, 97, 28, 0.10);
     --supporting: #4E7A9B;
     --noise: #9A9DA5;
     --add-bg: #E9F4EA;
@@ -39,8 +41,10 @@
       --text: #E6E4DF;
       --muted: #8B909A;
       --faint: #5E636D;
-      --accent: #E2A45C;
-      --accent-soft: rgba(226, 164, 92, 0.12);
+      --accent: #E6E4DF;
+      --accent-soft: rgba(230, 228, 223, 0.10);
+      --core: #E2A45C;
+      --core-soft: rgba(226, 164, 92, 0.12);
       --supporting: #7FA8C9;
       --noise: #5E636D;
       --add-bg: rgba(70, 165, 85, 0.13);
@@ -68,8 +72,10 @@
     --text: #E6E4DF;
     --muted: #8B909A;
     --faint: #5E636D;
-    --accent: #E2A45C;
-    --accent-soft: rgba(226, 164, 92, 0.12);
+    --accent: #E6E4DF;
+    --accent-soft: rgba(230, 228, 223, 0.10);
+    --core: #E2A45C;
+    --core-soft: rgba(226, 164, 92, 0.12);
     --supporting: #7FA8C9;
     --noise: #5E636D;
     --add-bg: rgba(70, 165, 85, 0.13);
@@ -96,8 +102,10 @@
     --text: #1D1F23;
     --muted: #6D7078;
     --faint: #9A9DA5;
-    --accent: #A8611C;
-    --accent-soft: rgba(168, 97, 28, 0.10);
+    --accent: #1D1F23;
+    --accent-soft: rgba(29, 31, 35, 0.07);
+    --core: #A8611C;
+    --core-soft: rgba(168, 97, 28, 0.10);
     --supporting: #4E7A9B;
     --noise: #9A9DA5;
     --add-bg: #E9F4EA;
@@ -370,7 +378,7 @@
     margin-top: 5px;
     flex-shrink: 0;
   }
-  .tier-core .tier-mark { background: var(--accent); }
+  .tier-core .tier-mark { background: var(--core); }
   .tier-supporting .tier-mark { background: transparent; border: 1.5px solid var(--supporting); }
   .tier-noise .tier-mark { background: transparent; border: 1.5px dashed var(--noise); }
   .tier-bucket .tier-mark { background: transparent; border: 1.5px dotted var(--faint); border-radius: 50%; }
@@ -493,7 +501,7 @@
     color: var(--accent);
     letter-spacing: 0.06em;
   }
-  .tier-pill.core { color: var(--accent); background: var(--accent-soft); }
+  .tier-pill.core { color: var(--core); background: var(--core-soft); }
   .tier-pill.supporting { color: var(--supporting); background: var(--note-soft); }
   .tier-pill.noise { color: var(--muted); background: var(--panel-2); }
   .tier-pill.bucket { color: var(--muted); background: var(--panel-2); }
@@ -986,7 +994,7 @@
     <div class="rail-list" id="rail-list"></div>
     <div class="rail-footer">
       <div class="legend">
-        <span><span class="tier-mark" style="background: var(--accent)"></span>core</span>
+        <span><span class="tier-mark" style="background: var(--core)"></span>core</span>
         <span><span class="tier-mark" style="border: 1.5px solid var(--supporting)"></span>supporting</span>
         <span><span class="tier-mark" style="border: 1.5px dashed var(--noise)"></span>noise</span>
       </div>
